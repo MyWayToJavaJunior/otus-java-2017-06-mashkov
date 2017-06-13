@@ -1,45 +1,46 @@
 package ru.otus;
 
 
-import sun.rmi.runtime.Log;
-
-import java.lang.reflect.Array;
-import java.lang.reflect.Field;
-import java.util.*;
+import ru.otus.agent.AgentMemoryCounter;
 import java.util.function.Supplier;
 
 public class Main {
+    //jvm options -XX:-UseTLAB -Xmx512m -javaagent:Agent.jar
+    public static int times = 10;
+    public static int elements = 1000000;
     public static void main(String[] args) {
-        int elements = 10000000;
-        //runTest(emptyStringSupplier, 100000);
-        runTest(fullStringSupplier, elements);
-        //runTest(integerSupplier, 100000);
-        //runTest(emptyIntArraySupplier, 1000000);
-        //runTest(emptyIntArraySupplier, 10000);
+        //runTest(emptyStringSupplier);
+        //runTest(fullStringSupplier);
+        //runTest(integerSupplier);
+        runTest(emptyIntArraySupplier);
+        //runTest(emptyIntArraySupplier);
+        //runTest(emptyObjectSupplier);
+        //runTest(personSupplier);
     }
 
-    static void runTest(Supplier supplier, int elements){
+    static void runTest(Supplier supplier){
         String className = supplier.get().getClass().getCanonicalName();
-        System.gc();
-        try {
-            Thread.sleep(200);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        long resultSize = 0;
+        for (int i = 0; i < times; i++) {
+            System.gc();
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            Runtime runtime = Runtime.getRuntime();
+            long startMem = runtime.totalMemory() -runtime.freeMemory();
+            Object[] result = new Object[elements];
+            for (int j = 0; j < elements; j++) {
+                result[j] = supplier.get();
+            }
+            long stopMem = runtime.totalMemory() - runtime.freeMemory();
+            resultSize += (stopMem - startMem)/elements;
         }
-        Runtime runtime = Runtime.getRuntime();
-        long startMem = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-        System.out.println("Memory before: "+startMem);
-        Object[] result = new Object[elements];
-        for (int i = 0; i < elements; i++) {
-            result[i] = supplier.get();
-        }
-        long stopMem = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-        long diffMemory = stopMem - startMem;
-        System.out.println("Memory after: "+stopMem);
         System.out.println("Test for "+className);
-        System.out.println("Used memory is: "+diffMemory);
-        System.out.println("Objects created: "+result.length);
-        System.out.println("Memory per object: "+diffMemory/elements);
+        System.out.println("Objects created: "+elements);
+        System.out.println("Memory per object: "+resultSize/times);
+        System.out.println(String.format("From instruments %s, size=%s", className, AgentMemoryCounter.getSize(supplier.get())));
 
     }
 
@@ -48,7 +49,7 @@ public class Main {
     static Supplier<String> emptyStringSupplier = String::new;
     static Supplier<String> fullStringSupplier = ()->"qwertt";
     static Supplier<Object> emptyObjectSupplier = Object::new;
-    static Supplier<Person> personSupplier = ()->new Person("john", 30);
+    static Supplier<Person> personSupplier = Person::new;
     static Supplier<int[]> emptyIntArraySupplier = () -> new int[0];
     static Supplier<Integer> integerSupplier = ()-> 5;
 
@@ -57,11 +58,8 @@ public class Main {
         int age;
 
         Person(){
-        }
-
-        Person(String name, int age){
-            this.name = name;
-            this.age = age;
+            this.name = "john";
+            this.age = 12;
         }
     }
 }
