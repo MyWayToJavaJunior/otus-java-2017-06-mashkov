@@ -6,9 +6,9 @@ import java.util.function.Supplier;
 
 public class Main {
     //jvm options -XX:-UseTLAB -Xmx512m -javaagent:Agent.jar
-    public static int times = 10;
-    public static int elements = 1000000;
-    public static void main(String[] args) {
+    private static int times = 10;
+    private static int elements = 1000000;
+    private static void main(String[] args) {
         //runTest(emptyStringSupplier);
         //runTest(fullStringSupplier);
         //runTest(integerSupplier);
@@ -18,13 +18,13 @@ public class Main {
         //runTest(personSupplier);
     }
 
-    static void runTest(Supplier supplier){
+    private static void runTest(Supplier supplier){
         String className = supplier.get().getClass().getCanonicalName();
         long resultSize = 0;
         for (int i = 0; i < times; i++) {
             System.gc();
             try {
-                Thread.sleep(200);
+                Thread.sleep(50);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
