@@ -41,10 +41,13 @@ class MyArrayListTest {
         myArrayList.add("one");
         myArrayList.add("two");
         myArrayList.add("three");
-        ArrayList<String> dest = new ArrayList<>();
+        ArrayList<String> dest = new ArrayList<>(3);
+        dest.add("1");
+        dest.add("2");
+        dest.add("3");
         Collections.copy(dest, myArrayList);
+        assertArrayEquals(myArrayList.toArray(), dest.toArray());
 
-        dest.forEach(System.out::println);
     }
 
     @Test

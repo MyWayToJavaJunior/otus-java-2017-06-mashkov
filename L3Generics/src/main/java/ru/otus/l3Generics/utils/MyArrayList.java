@@ -29,7 +29,7 @@ public class MyArrayList<T> implements List<T> {
     }
 
     public Object[] toArray() {
-        return new Object[0];
+        return Arrays.copyOf(elements, size);
     }
 
     public <T1> T1[] toArray(T1[] a) {
@@ -73,7 +73,7 @@ public class MyArrayList<T> implements List<T> {
     }
 
     public T get(int index) {
-        return null;
+        return (T) elements[index];
     }
 
     public T set(int index, T element) {
@@ -106,8 +106,7 @@ public class MyArrayList<T> implements List<T> {
 
             @Override
             public T next() {
-                currentPosition++;
-                return (T) elements[currentPosition-1];
+                return (T) elements[currentPosition++];
             }
 
             @Override
@@ -117,8 +116,7 @@ public class MyArrayList<T> implements List<T> {
 
             @Override
             public T previous() {
-                currentPosition--;
-                return (T) elements[currentPosition];
+                return (T) elements[--currentPosition];
             }
 
             @Override

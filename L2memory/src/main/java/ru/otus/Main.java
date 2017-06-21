@@ -8,7 +8,7 @@ public class Main {
     //jvm options -XX:-UseTLAB -Xmx512m -javaagent:Agent.jar
     private static int times = 10;
     private static int elements = 1000000;
-    private static void main(String[] args) {
+    public static void main(String[] args) {
         //runTest(emptyStringSupplier);
         //runTest(fullStringSupplier);
         //runTest(integerSupplier);
