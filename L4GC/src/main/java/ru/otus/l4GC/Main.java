@@ -11,7 +11,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
-    static int count = 100000;
+
+    //run with parameters:
+    //-Xms100m -Xmx100m -XX:MaxMetaspaceSize=100m -verbose:gc
+    // -Xloggc:logs/gc_pid_%p.log -XX:+PrintGCDateStamps
+    // -XX:+PrintGCDetails -XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles=10
+    // -XX:GCLogFileSize=100M -XX:+HeapDumpOnOutOfMemoryError
+    // -XX:HeapDumpPath=dumps/ -XX:OnOutOfMemoryError="kill -3 %p
+
+    static int count = 10000;
+    static int delay = 100;
     static String str = "number ";
 
     public static void main(String[] args) {
@@ -23,13 +32,13 @@ public class Main {
         }
     }
 
-    static void run() throws InterruptedException {
+    private static void run() throws InterruptedException {
         List<String> list = new ArrayList<>();
         fillList(list, count);
 
     }
 
-    static void fillList(List<String> list, int count) throws InterruptedException {
+    private static void fillList(List<String> list, int count) throws InterruptedException {
         int size = list.size();
         int from = size/2;
         for (int i = from; i < size; i++) {
@@ -39,7 +48,7 @@ public class Main {
             list.add(str + String.valueOf(i));
         }
         System.out.println("list is full, size = "+list.size());
-        //Thread.sleep(10);
+        Thread.sleep(delay);
         fillList(list, count);
     }
 
@@ -69,7 +78,5 @@ public class Main {
         }
     }
 
-    public static String getString(){
-        return "iteration, size = ";
-    }
+
 }

@@ -17,29 +17,24 @@ public class LogParser {
     }
 
     public void parse(String pathToLogs) throws IOException {
-        final int[] oldTimes = {0};
-        final int[] yongTimes = {0};
-        final double[] oldMillis = {0};
-        final double[] yongMillis = {0};
+        final double[] values = {0,0,0,0};
         Path path = Paths.get(pathToLogs);
         Files.lines(path).forEach(l->{
             if (l.contains("[GC")) {
-                yongTimes[0]++;
+                values[0]++;
                 String[] arr = l.split(" ");
                 double millis = Double.parseDouble(arr[8]);
-                //System.out.println("yong millis = " +millis);
-                yongMillis[0] += millis;
+                values[1]+=millis;
             } else if (l.contains("[Full GC")){
-                oldTimes[0]++;
+                values[2]++;
                 String[] arr = l.split(" ");
                 double millis = Double.parseDouble(arr[12]);
-                //System.out.println("old millis = " +millis);
-                oldMillis[0] +=millis;
+                values[3]+=millis;
             }
         });
 
-        System.out.println("Young GC was worked "+ yongTimes[0]+" times, "+yongMillis[0]+" seconds");
-        System.out.println("Old GC was worked "+ oldTimes[0]+" times, "+oldMillis[0]+" seconds");
+        System.out.println("Young GC was worked "+ values[0]+" times, "+values[1]+" seconds");
+        System.out.println("Old GC was worked "+ values[2]+" times, "+values[3]+" seconds");
     }
 
     private String readPath()
