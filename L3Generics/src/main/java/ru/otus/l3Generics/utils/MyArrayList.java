@@ -53,7 +53,14 @@ public class MyArrayList<T> implements List<T> {
 
     public boolean addAll(Collection<? extends T> c) {
         c.forEach(this::add);
-        return false;
+        return true;
+    }
+    public boolean addAll(T ...elements){
+        for (int i = 0; i < elements.length; i++) {
+            this.add(elements[i]);
+        }
+
+        return true;
     }
 
     public boolean addAll(int index, Collection<? extends T> c) {
@@ -77,7 +84,8 @@ public class MyArrayList<T> implements List<T> {
     }
 
     public T set(int index, T element) {
-        return null;
+        elements[index] = element;
+        return element;
     }
 
     public void add(int index, T element) {
@@ -99,14 +107,19 @@ public class MyArrayList<T> implements List<T> {
     public ListIterator<T> listIterator() {
         return new ListIterator<T>() {
             private int currentPosition = 0;
+            private int lastElem = -1;
             @Override
             public boolean hasNext() {
-                return currentPosition<size-1;
+                return currentPosition<size;
             }
 
             @Override
             public T next() {
-                return (T) elements[currentPosition++];
+                if (!hasNext()) throw new NoSuchElementException();
+                lastElem = currentPosition;
+                currentPosition++;
+                return (T) elements[currentPosition];
+
             }
 
             @Override
@@ -136,6 +149,8 @@ public class MyArrayList<T> implements List<T> {
 
             @Override
             public void set(T t) {
+                if (lastElem<0) throw new IllegalStateException();
+                MyArrayList.this.set(lastElem, t);
 
             }
 

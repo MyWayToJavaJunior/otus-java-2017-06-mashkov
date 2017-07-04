@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -63,7 +64,7 @@ class MyArrayListTest {
         Collections.sort(myArrayList);
         Collections.sort(list);
 
-        assertEquals(list, myArrayList);
+        assertArrayEquals(list.toArray(), myArrayList.toArray());
     }
 
 }
