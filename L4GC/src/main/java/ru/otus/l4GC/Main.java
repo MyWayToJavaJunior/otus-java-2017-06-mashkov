@@ -17,7 +17,7 @@ public class Main {
     // -Xloggc:logs/gc_pid_%p.log -XX:+PrintGCDateStamps
     // -XX:+PrintGCDetails -XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles=10
     // -XX:GCLogFileSize=100M -XX:+HeapDumpOnOutOfMemoryError
-    // -XX:HeapDumpPath=dumps/ -XX:OnOutOfMemoryError="kill -3 %p
+    // -XX:HeapDumpPath=dumps/ -XX:OnOutOfMemoryError="kill -3 %p"
 
     static int count = 10000;
     static int delay = 100;
