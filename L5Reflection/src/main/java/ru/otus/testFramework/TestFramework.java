@@ -26,6 +26,7 @@ public class TestFramework {
     }
 
     private static<T> void runOneTestClass(Class<T> clazz){
+        System.out.println("Run one test");
         Method[] methods = ReflectionHelper.getMethods(clazz);
         ArrayList<Method> beforeMethods = new ArrayList<>();
         ArrayList<Method> afterMethods = new ArrayList<>();
