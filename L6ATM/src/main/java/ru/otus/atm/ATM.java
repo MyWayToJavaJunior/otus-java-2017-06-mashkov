@@ -6,13 +6,14 @@ public class ATM {
     private Strategy strategy;
 
     public ATM(){
-        Arrays.asList(CELL.values()).forEach(c->c.setEndCallback(endSumm -> {
+        setCallbackToCells(endSumm -> {
             //Проверяем всё ли мы сможем выдать, если да то просим ячейки отдать деньги
             //тут можно поменять стратегию динамически
             if (endSumm>0) throw new OutOfExchangeException();
             else giveMoney();
-        }));
+        });
     }
+
 
     public void addMoney(CELL cell, int count){
         cell.addMoney(count);
@@ -42,6 +43,10 @@ public class ATM {
             System.out.println("Выдал "+c.neededCount+" купюр, номиналом "+c.nominal);
 
         });
+    }
+
+    private void setCallbackToCells(Callback callback){
+        Arrays.asList(CELL.values()).forEach(c->c.setEndCallback(callback));
     }
 
 }
