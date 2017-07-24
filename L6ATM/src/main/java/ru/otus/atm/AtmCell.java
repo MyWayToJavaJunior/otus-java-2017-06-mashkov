@@ -1,19 +1,17 @@
 package ru.otus.atm;
 
-public enum CELL {
-    CELL_500(500),CELL_100(100), CELL_1000(1000);
-
-    int nominal;
-    int count;
-    CELL next;
-    Callback endCallback;
+public class AtmCell {
+    private CELL_TYPE cell_type;
+    private int count;
+    private AtmCell next;
+    private Callback endCallback;
     //количество купюр к выдаче
-    int neededCount;
+    private int neededCount;
     //максимальное количество купюр для выдачи
-    int maxCountForGive;
+    private int maxCountForGive;
 
-    CELL(int nominal){
-        this.nominal = nominal;
+    public AtmCell(CELL_TYPE type){
+        this.cell_type = type;
         this.count = 0;
         next = null;
     }
@@ -33,15 +31,15 @@ public enum CELL {
      * @throws OutOfExchangeException
      */
     public void getMoney(long summ) throws OutOfExchangeException {
-        if ((summ/nominal)>maxCountForGive){
-            summ = summ-maxCountForGive*nominal;
+        if ((summ/cell_type.getNominal())>maxCountForGive){
+            summ = summ-maxCountForGive*cell_type.getNominal();
             neededCount = maxCountForGive;
 
         } else {
-            neededCount = (int) (summ/nominal);
-            summ = summ-neededCount*nominal;
+            neededCount = (int) (summ/cell_type.getNominal());
+            summ = summ-neededCount*cell_type.getNominal();
         }
-        System.out.println("готовлю "+neededCount+" купюр, номиналом "+nominal+"к выдаче, осталось "+summ);
+        System.out.println("готовлю "+neededCount+" купюр, номиналом "+cell_type.getNominal()+"к выдаче, осталось "+summ);
         if (hasNext() && summ>0) next.getMoney(summ);
         else endCallback.call(summ);
     }
@@ -55,7 +53,7 @@ public enum CELL {
         maxCountForGive = count;
     }
 
-    public void setNext(CELL next){
+    public void setNext(AtmCell next){
         this.next = next;
     }
 
@@ -64,7 +62,15 @@ public enum CELL {
     }
 
     public int getNominal() {
-        return nominal;
+        return cell_type.getNominal();
+    }
+
+    public int getNeededCount() {
+        return neededCount;
+    }
+
+    public CELL_TYPE getType() {
+        return cell_type;
     }
 
     public void setEndCallback(Callback endCallback){
@@ -78,5 +84,4 @@ public enum CELL {
     public void setMaxCountForGive(int maxCountForGive) {
         this.maxCountForGive = maxCountForGive;
     }
-
 }

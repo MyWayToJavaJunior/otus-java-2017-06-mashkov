@@ -11,9 +11,9 @@ class ATMTest {
     @BeforeEach
     void setup(){
         atm = new ATM();
-        atm.addMoney(CELL.CELL_100, 20);
-        atm.addMoney(CELL.CELL_500, 10);
-        atm.addMoney(CELL.CELL_1000, 10);
+        atm.addMoney(CELL_TYPE.CELL_100, 20);
+        atm.addMoney(CELL_TYPE.CELL_500, 10);
+        atm.addMoney(CELL_TYPE.CELL_1000, 10);
         atm.setStrategy(new ExchangeStrategy());
     }
 
