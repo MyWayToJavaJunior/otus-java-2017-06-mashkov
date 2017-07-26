@@ -1,8 +1,12 @@
 package ru.otus.atm;
 
+import ru.otus.interfaces.ATMmashine;
+import ru.otus.interfaces.Callback;
+import ru.otus.interfaces.Strategy;
+
 import java.util.ArrayList;
 
-public class ATM {
+public class ATM implements ATMmashine{
     private Strategy strategy;
     private ArrayList<AtmCell> atmCells;
 
@@ -37,6 +41,13 @@ public class ATM {
 
     public long getBalance(){
         return atmCells.stream().map(v->v.getCount()*v.getNominal()).reduce((v1, v2)->v1+v2).get();
+    }
+
+    @Override
+    public void setDefaultMoney() {
+        addMoney(CELL_TYPE.CELL_100, 20);
+        addMoney(CELL_TYPE.CELL_500, 20);
+        addMoney(CELL_TYPE.CELL_1000, 20);
     }
 
     public void getMoney(long summ) throws OutOfMoneyException, OutOfExchangeException {

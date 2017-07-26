@@ -1,5 +1,7 @@
 package ru.otus.atm;
 
+import ru.otus.interfaces.Strategy;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;

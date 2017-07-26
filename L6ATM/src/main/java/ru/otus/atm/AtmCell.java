@@ -1,5 +1,7 @@
 package ru.otus.atm;
 
+import ru.otus.interfaces.Callback;
+
 public class AtmCell {
     private CELL_TYPE cell_type;
     private int count;

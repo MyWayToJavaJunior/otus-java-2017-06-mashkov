@@ -1,4 +1,6 @@
-package ru.otus.atm;
+package ru.otus.interfaces;
+
+import ru.otus.atm.AtmCell;
 
 import java.util.ArrayList;
 

@@ -1,5 +1,7 @@
 package ru.otus.atm;
 
+import ru.otus.interfaces.Strategy;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
