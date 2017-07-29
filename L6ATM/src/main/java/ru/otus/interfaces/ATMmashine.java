@@ -7,4 +7,5 @@ public interface ATMmashine {
     long getBalance();
     void setDefaultMoney();
     void getMoney(long summ) throws OutOfMoneyException, OutOfExchangeException;
+    void setStrategy(Strategy strategy);
 }
