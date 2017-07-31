@@ -4,6 +4,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,7 +26,12 @@ public class ReflectionHelper {
         return null;
     }
 
-    static Object getFieldValue(Object object, String name) {
+    public static <T>Field[] getFields(T obj){
+        Field[] fields = obj.getClass().getDeclaredFields();
+        return fields;
+    }
+
+    public static Object getFieldValue(Object object, String name) {
         Field field = null;
         boolean isAccessible = true;
         try {

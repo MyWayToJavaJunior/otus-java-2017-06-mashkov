@@ -6,6 +6,7 @@
 
     <groupId>ru.otus</groupId>
     <artifactId>otus-java-2017-06-mashkov</artifactId>
+    <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
 
     <modules>
@@ -15,6 +16,7 @@
         <module>L3Generics</module>
         <module>L2memory</module>
         <module>L7AtmDepartment</module>
+        <module>L8Json</module>
     </modules>
 
 </project>
