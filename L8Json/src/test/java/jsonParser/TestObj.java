@@ -6,15 +6,15 @@ import java.util.Map;
 public class TestObj {
     int num;
     String string;
-    Map<Integer, String> map;
+    Map<Integer, ValueMap> map;
 
 
     public TestObj(){
         string = "Hello!";
         num = 24;
         map = new HashMap<>();
-        map.put(1,"1");
-        map.put(2,"2");
+        map.put(1, new ValueMap());
+        map.put(2, new ValueMap());
     }
 
     @Override
@@ -33,5 +33,15 @@ public class TestObj {
         int result = string != null ? string.hashCode() : 0;
         result = 31 * result + num;
         return result;
+    }
+
+    public class ValueMap{
+        String s;
+        int i;
+
+        public ValueMap() {
+            s = "123";
+            i = 321;
+        }
     }
 }

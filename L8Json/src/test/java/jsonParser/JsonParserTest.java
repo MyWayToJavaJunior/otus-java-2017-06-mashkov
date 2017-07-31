@@ -25,6 +25,7 @@ class JsonParserTest {
     @Test
     void parse() {
         String expected = gson.toJson(obj);
+        System.out.println(expected);
         String actual = parser.toJson(obj);
         System.out.println(actual);
         assertEquals(expected, actual);

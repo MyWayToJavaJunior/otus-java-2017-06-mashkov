@@ -1,5 +1,9 @@
 package jsonParser;
 
+import com.google.gson.JsonPrimitive;
+import jsonParser.interfaces.Parser;
+import jsonParser.parsers.NumberParser;
+import jsonParser.parsers.StringParser;
 import ru.otus.testFramework.ReflectionHelper;
 
 import javax.json.*;
@@ -9,41 +13,128 @@ import java.util.*;
 
 public class JsonParser {
 
-    public String toJson(Object object){
-        String result = null;
+    private Parser parser;
 
-        JsonObject jsonObject = parse(object);
-
-        return jsonObject.toString();
+    public JsonParser(){
+        parser = new NumberParser();
+        parser.setNext(new StringParser());
     }
 
-    private JsonObject parse(Object object){
+    public String toJson(Object object){
+        /*String result = null;
+
+        JsonValue jsonObject = parse(object);*/
+
         final JsonObjectBuilder objectBuilder = Json.createObjectBuilder();
 
+        Field[] fields = ReflectionHelper.getFields(object);
+
+        for (int i = 0; i < fields.length; i++) {
+            Field field = fields[i];
+            parser.parse(ReflectionHelper.getFieldValue(object, field.getName()), field.getName(), objectBuilder);
+        }
+
+
+        return objectBuilder.build().toString();
+    }
+
+
+
+    private JsonValue parse(Object object){
+
+
         if (object instanceof AbstractList){
-            //parse as list
+            return parseList(object);
         } else if (object instanceof AbstractMap) {
-            HashMap map = (HashMap)object;
-            for (Object entry: map.entrySet()) {
-                Map.Entry<Object, Object> e = (Map.Entry<Object,Object>)entry;
-                objectBuilder.add((String) e.getKey(), (String) e.getValue());
-            }
-        } else {
-            final Field[] fields = ReflectionHelper.getFields(object);
-
-            Arrays.asList(fields).forEach(f->{
-                String name = f.getName();
-                Class type = f.getType();
-                Object value = ReflectionHelper.getFieldValue(object, name);
-
-                addValue(value, name, objectBuilder);
-
-            });
+            return parseMap(object);
+        } else if (object instanceof Number) {
+            return parseNumber(object);
+        } else if (object instanceof String){
+            return parseString(object);
+        }
+        else {
+            return parseObj(object);
 
         }
 
 
+        //return objectBuilder.build();
+    }
+
+    private JsonValue parseString(Object object) {
+
+
+        return null;
+    }
+
+    private JsonValue parseNumber(Object object) {
+        /*if (Integer.class.equals(object.getClass())) {
+            builder.add(name, Integer.class.cast(object));
+            return;
+        }
+        if (Long.class.equals(value.getClass())) {
+            builder.add(name, Long.class.cast(value));
+            return;
+        }
+        if (Double.class.equals(value.getClass())) {
+            builder.add(name, Double.class.cast(value));
+            return;
+        }
+        if (Float.class.equals(value.getClass())) {
+            builder.add(name, Float.class.cast(value));
+            return;
+        }
+        if (Character.class.equals(value.getClass())) {
+            builder.add(name, Character.class.cast(value));
+            return;
+        }
+        if (Byte.class.equals(value.getClass())) {
+            builder.add(name, Byte.class.cast(value));
+            return;
+        }*/
+        return null;
+
+    }
+
+    private JsonValue parseMap(Object object){
+
+        final JsonObjectBuilder objectBuilder = Json.createObjectBuilder();
+
+        HashMap map = (HashMap)object;
+        for (Object entry: map.entrySet()) {
+            Map.Entry<Object, Object> e = (Map.Entry<Object,Object>)entry;
+            objectBuilder.add((String) e.getKey(), (String) e.getValue());
+        }
+
         return objectBuilder.build();
+
+    }
+
+    private JsonValue parseList(Object object){
+
+        final JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+
+        List<Object> list = (List<Object>)object;
+        list.forEach(v->{
+            arrayBuilder.add(parse(v));
+        });
+        return arrayBuilder.build();
+
+    }
+
+    private JsonValue parseObj(Object object){
+        final JsonObjectBuilder objectBuilder = Json.createObjectBuilder();
+        final Field[] fields = ReflectionHelper.getFields(object);
+
+        Arrays.asList(fields).forEach(f->{
+            String name = f.getName();
+            Class type = f.getType();
+            Object value = ReflectionHelper.getFieldValue(object, name);
+
+            addValue(value, name, objectBuilder);
+
+        });
+        return null;
     }
 
     private static void addValue(Object value, String name, JsonObjectBuilder builder){
