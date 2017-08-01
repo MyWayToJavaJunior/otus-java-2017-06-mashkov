@@ -3,6 +3,7 @@ package jsonParser;
 import com.google.gson.JsonPrimitive;
 import jsonParser.interfaces.Parser;
 import jsonParser.parsers.NumberParser;
+import jsonParser.parsers.ObjectParser;
 import jsonParser.parsers.StringParser;
 import ru.otus.testFramework.ReflectionHelper;
 
@@ -17,7 +18,8 @@ public class JsonParser {
 
     public JsonParser(){
         parser = new NumberParser();
-        parser.setNext(new StringParser());
+        parser.setNext(new StringParser())
+                .setNext(new ObjectParser());
     }
 
     public String toJson(Object object){
@@ -36,6 +38,10 @@ public class JsonParser {
 
 
         return objectBuilder.build().toString();
+    }
+
+    public void parse(Object object, String fieldName, JsonObjectBuilder builder){
+        parser.parse(object, fieldName, builder);
     }
 
 

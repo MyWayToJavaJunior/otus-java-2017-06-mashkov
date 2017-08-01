@@ -13,7 +13,6 @@ public class NumberParser extends Parser {
 
     @Override
     public void parse(Object object, String fieldName, JsonObjectBuilder builder) {
-        System.out.println("Number: "+object+" "+fieldName);
         if (object instanceof Number){
             if (Integer.class.equals(object.getClass())) {
                 builder.add(fieldName, Integer.class.cast(object));

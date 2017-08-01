@@ -7,8 +7,9 @@ public abstract class Parser {
 
     public abstract void parse(Object object, String fieldName, JsonObjectBuilder builder);
 
-    public void setNext(Parser parser) {
+    public Parser setNext(Parser parser) {
         this.next = parser;
+        return parser;
     }
     public Parser getNext() {
         return next;

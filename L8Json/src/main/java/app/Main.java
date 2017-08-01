@@ -70,6 +70,10 @@ public class Main {
         private String str = "2";
         private int i = 1;
         private String str2 = "3";
-        private float f = 1.3f;
+        private ThirdTest f = new ThirdTest();
+    }
+    public static class ThirdTest{
+        private String s = "ssss";
+        private long l = 123;
     }
 }
