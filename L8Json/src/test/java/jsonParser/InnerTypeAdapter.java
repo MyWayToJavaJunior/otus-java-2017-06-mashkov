@@ -6,7 +6,7 @@ import ru.otus.app.InnerTestClass;
 
 import java.lang.reflect.Type;
 
-public class InnertTypeAdapter implements JsonDeserializer<InnerTestClass>, JsonSerializer<InnerTestClass> {
+public class InnerTypeAdapter implements JsonDeserializer<InnerTestClass>, JsonSerializer<InnerTestClass> {
     @Override
     public InnerTestClass deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
         return null;

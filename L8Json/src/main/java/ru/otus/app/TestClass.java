@@ -9,6 +9,7 @@ public class TestClass {
     ArrayList<String> list;
     HashMap<String, Long> map;
     Queue<String> queue;
+    InnerTestClass[] array;
 
     public TestClass(){
         list = new ArrayList<>(Arrays.asList("qwe","www"));
@@ -19,5 +20,6 @@ public class TestClass {
         queue = new PriorityQueue<>();
         queue.add("qw");
         queue.add("qa");
+        array = new InnerTestClass[]{new InnerTestClass(),new InnerTestClass()};
     }
 }

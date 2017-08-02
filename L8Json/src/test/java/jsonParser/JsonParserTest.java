@@ -23,7 +23,7 @@ class JsonParserTest {
         parser = new SimpleJsonParserBuilder()
                 .setTypeAdapter(new TestClassAdapter(), InnerTestClass.class)
                 .build();
-        gson = new GsonBuilder().registerTypeAdapter(InnerTestClass.class, new InnertTypeAdapter()).create();
+        gson = new GsonBuilder().registerTypeAdapter(InnerTestClass.class, new InnerTypeAdapter()).create();
         obj = new TestClass();
     }
 

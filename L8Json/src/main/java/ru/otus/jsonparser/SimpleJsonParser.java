@@ -13,6 +13,7 @@ public class SimpleJsonParser {
 
     public SimpleJsonParser() {
         addParser(new NumberParser())
+                .setNext(new ArrayParser())
                 .setNext(new StringParser())
                 .setNext(new MapParser())
                 .setNext(new CollectionParser())
@@ -26,6 +27,7 @@ public class SimpleJsonParser {
         }
         parserList.get(parserList.size()-1)
                 .setNext(new NumberParser())
+                .setNext(new ArrayParser())
                 .setNext(new StringParser())
                 .setNext(new MapParser())
                 .setNext(new CollectionParser())
