@@ -24,11 +24,13 @@ public class Main {
         try {
             executor.execUpdate("create table if not exists users (id  bigserial not null, name varchar(256), age int not null, primary key (id))");
             executor.save(userDataSet);
+            UserDataSet dataSet = executor.load(1, UserDataSet.class);
+            System.out.println(dataSet);
         } catch (SQLException | MappingException e) {
             e.printStackTrace();
         } finally {
             try {
-                //executor.execUpdate("drop table users");
+                executor.execUpdate("drop table users");
                 connection.close();
             } catch (SQLException e) {
                 e.printStackTrace();

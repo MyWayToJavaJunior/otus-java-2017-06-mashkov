@@ -6,7 +6,7 @@ import javax.persistence.MappedSuperclass;
 @MappedSuperclass
 public abstract class DataSet {
     @Id
-    private long id;
+    long id;
 
     public long getId(){
         return id;

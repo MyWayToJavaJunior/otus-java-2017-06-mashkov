@@ -53,7 +53,7 @@ public class ReflectionHelper {
         return null;
     }
 
-    static void setFieldValue(Object object, String name, Object value) {
+    public static void setFieldValue(Object object, String name, Object value) {
         Field field = null;
         boolean isAccessible = true;
         try {

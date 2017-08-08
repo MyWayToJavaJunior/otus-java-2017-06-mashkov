@@ -37,4 +37,32 @@ public class UserDataSet extends DataSet {
     public void setAge(int age) {
         this.age = age;
     }
+
+    @Override
+    public String toString() {
+        return "UserDataSet{" +
+                "name='" + name + '\'' +
+                ", age=" + age +
+                ", id=" + id +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof UserDataSet)) return false;
+
+        UserDataSet dataSet = (UserDataSet) o;
+
+        if (age != dataSet.age) return false;
+        if (id != dataSet.id) return false;
+        return name != null ? name.equals(dataSet.name) : dataSet.name == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name != null ? name.hashCode() : 0;
+        result = 31 * result + age;
+        return result;
+    }
 }

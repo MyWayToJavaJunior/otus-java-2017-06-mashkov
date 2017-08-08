@@ -12,13 +12,11 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.HashMap;
-import java.util.Map;
 
 public class Executor {
     private Connection connection;
 
-    public Executor(Connection connection){
+    public Executor(Connection connection) {
         this.connection = connection;
     }
 
@@ -29,8 +27,8 @@ public class Executor {
         }
     }
 
-    public <T> T execQuery(String query, TResultHandler<T> handler) throws SQLException{
-        try (Statement stmt = connection.createStatement()){
+    public <T> T execQuery(String query, TResultHandler<T> handler) throws SQLException {
+        try (Statement stmt = connection.createStatement()) {
 
             ResultSet resultSet = stmt.executeQuery(query);
             T obj = handler.handle(resultSet);
@@ -39,7 +37,7 @@ public class Executor {
     }
 
     public <T extends DataSet> void save(T user) throws SQLException, MappingException {
-        try (Statement stmt = connection.createStatement()){
+        try (Statement stmt = connection.createStatement()) {
 
 
             StringBuilder builder = new StringBuilder();
@@ -49,8 +47,8 @@ public class Executor {
 
 
             Annotation tableAnnotation = user.getClass().getAnnotation(Table.class);
-            if (tableAnnotation!=null){
-                builder.append(((Table)tableAnnotation).name());
+            if (tableAnnotation != null) {
+                builder.append(((Table) tableAnnotation).name());
             } else throw new MappingException("Не могу сохранить объект. Нет названия таблицы!");
 
 
@@ -68,7 +66,7 @@ public class Executor {
                         valueBuilder.append("'").append(value).append("'");
                     } else valueBuilder.append(value);
 
-                    if (i != fieldsLength-1) {
+                    if (i != fieldsLength - 1) {
                         nameBuilder.append(", ");
                         valueBuilder.append(", ");
                     }
@@ -85,30 +83,41 @@ public class Executor {
                     .append(valueBuilder)
                     .append(")");
 
-            System.out.println("Executing: "+builder.toString());
+            System.out.println("Executing: " + builder.toString());
             int result = stmt.executeUpdate(builder.toString(), Statement.RETURN_GENERATED_KEYS);
             ResultSet rs = stmt.getGeneratedKeys();
             rs.next();
             long id = rs.getLong(1);
             user.setId(id);
-            System.out.println("Updated: "+result+", ID="+id);
+            System.out.println("Updated: " + result + ", ID=" + id);
 
         }
     }
 
     public <T extends DataSet> T load(long id, Class<T> clazz) throws MappingException, SQLException {
-        Field[] fields = ReflectionHelper.getFields(clazz);
+
 
         Annotation tableAnnotation = clazz.getAnnotation(Table.class);
 
-        if (tableAnnotation!=null){
+        if (tableAnnotation != null) {
 
-            StringBuilder builder = new StringBuilder();
-            builder.append("select * from ").append(((Table)tableAnnotation).name()).append(" where id=")
-                    .append(id);
-            T result = execQuery(builder.toString(), resultSet -> {
-                return null;
+            String query = "select * from " + ((Table) tableAnnotation).name() + " where id=" + id;
+            T result = execQuery(query, resultSet -> {
+                resultSet.next();
+                Field[] fields = ReflectionHelper.getFields(clazz);
+                T obj = ReflectionHelper.instantiate(clazz);
+                for (Field field : fields) {
+                    Annotation fieldAnnotation = field.getAnnotation(Column.class);
+                    if (fieldAnnotation != null) {
+                        ReflectionHelper.setFieldValue(obj, field.getName(), resultSet.getObject(((Column) fieldAnnotation).name()));
+                    }
+                }
+                return obj;
             });
+
+            result.setId(id);
+
+            return result;
 
         } else {
             throw new MappingException("Не могу сохранить объект. Нет названия таблицы!");
