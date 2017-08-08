@@ -96,8 +96,24 @@ public class Executor {
         }
     }
 
-    /*public <T extends DataSet> T load(long id, Class<T> clazz){
-    }*/
+    public <T extends DataSet> T load(long id, Class<T> clazz) throws MappingException, SQLException {
+        Field[] fields = ReflectionHelper.getFields(clazz);
+
+        Annotation tableAnnotation = clazz.getAnnotation(Table.class);
+
+        if (tableAnnotation!=null){
+
+            StringBuilder builder = new StringBuilder();
+            builder.append("select * from ").append(((Table)tableAnnotation).name()).append(" where id=")
+                    .append(id);
+            T result = execQuery(builder.toString(), resultSet -> {
+                return null;
+            });
+
+        } else {
+            throw new MappingException("Не могу сохранить объект. Нет названия таблицы!");
+        }
+    }
 
 
 }
