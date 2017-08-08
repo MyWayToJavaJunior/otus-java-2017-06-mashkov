@@ -13,7 +13,7 @@ public class ReflectionHelper {
     private ReflectionHelper() {
     }
 
-    static <T> T instantiate(Class<T> type, Object... args) {
+    public static <T> T instantiate(Class<T> type, Object... args) {
         try {
             if (args.length == 0) {
                 return type.newInstance();
@@ -29,6 +29,10 @@ public class ReflectionHelper {
     public static <T>Field[] getFields(T obj){
         Field[] fields = obj.getClass().getDeclaredFields();
         return fields;
+    }
+
+    public static <T> Field[] getFields(Class<T> clazz){
+        return clazz.getDeclaredFields();
     }
 
     public static Object getFieldValue(Object object, String name) {
