@@ -1,23 +1,19 @@
 package main;
 
 
-import org.postgresql.Driver;
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import ru.otus.dbhelper.DbHelper;
+import ru.otus.executor.Executor;
 
 public class Main {
     public static void main(String[] args) {
-        Driver driver = new Driver();
-        try {
-            DriverManager.registerDriver(driver);
-            Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/myBase","anton", "anton");
-            Statement statement = connection.createStatement();
-            statement.execute("CREATE TABLE 'newTable' if NOT EXISTS ");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        DbHelper.example();
+
+        Executor executor = new Executor(DbHelper.getConnection());
+
+        String query = "create table test "+
+                " (name  VARCHAR(10),"+
+                " age INTEGER)";
+
+        System.out.println(executor.execUpdate(query));
     }
 }
