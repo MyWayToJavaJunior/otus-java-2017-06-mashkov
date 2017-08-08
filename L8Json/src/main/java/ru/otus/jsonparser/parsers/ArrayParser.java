@@ -1,6 +1,7 @@
 package ru.otus.jsonparser.parsers;
 
 import ru.otus.jsonparser.Context;
+import ru.otus.jsonparser.JsonParserException;
 import ru.otus.jsonparser.abstractClasses.Parser;
 
 import javax.json.Json;
@@ -11,7 +12,7 @@ import java.util.Arrays;
 
 public class ArrayParser extends Parser {
     @Override
-    public JsonValue parse(Object object, Context context) {
+    public JsonValue parse(Object object, Context context) throws JsonParserException {
 
         if (object.getClass().isArray()){
             JsonArrayBuilder builder = Json.createArrayBuilder();
@@ -21,7 +22,9 @@ public class ArrayParser extends Parser {
                 builder.add(context.getParser().serialize(value));
             }
             return builder.build();
+        }else {
+            if (hasNext()) return getNext().parse(object, context);
         }
-        return getNext().parse(object, context);
+        throw new JsonParserException("Не определён тип!");
     }
 }

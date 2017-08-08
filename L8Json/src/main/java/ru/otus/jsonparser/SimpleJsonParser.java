@@ -15,6 +15,7 @@ public class SimpleJsonParser {
         addParser(new NumberParser())
                 .setNext(new ArrayParser())
                 .setNext(new StringParser())
+                .setNext(new BooleanParser())
                 .setNext(new MapParser())
                 .setNext(new CollectionParser())
                 .setNext(new ObjectParser());
@@ -29,17 +30,18 @@ public class SimpleJsonParser {
                 .setNext(new NumberParser())
                 .setNext(new ArrayParser())
                 .setNext(new StringParser())
+                .setNext(new BooleanParser())
                 .setNext(new MapParser())
                 .setNext(new CollectionParser())
                 .setNext(new ObjectParser());
     }
 
-    public String toJson(Object o){
+    public String toJson(Object o) throws JsonParserException {
 
         return serialize(o).toString();
     }
 
-    public JsonValue serialize(Object o){
+    public JsonValue serialize(Object o) throws JsonParserException {
         Context context = new Context();
         context.setParser(this);
         return parser.parse(o, context);

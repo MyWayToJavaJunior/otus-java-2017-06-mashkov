@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import ru.otus.app.InnerTestClass;
 import ru.otus.app.TestClass;
 import ru.otus.app.TestClassAdapter;
+import ru.otus.jsonparser.JsonParserException;
 import ru.otus.jsonparser.SimpleJsonParser;
 import ru.otus.jsonparser.SimpleJsonParserBuilder;
 
@@ -31,7 +32,12 @@ class JsonParserTest {
     void parse() {
         String expected = gson.toJson(obj);
         System.out.println(expected);
-        String actual = parser.toJson(obj);
+        String actual = null;
+        try {
+            actual = parser.toJson(obj);
+        } catch (JsonParserException e) {
+            e.printStackTrace();
+        }
         System.out.println(actual);
         assertEquals(expected, actual);
     }

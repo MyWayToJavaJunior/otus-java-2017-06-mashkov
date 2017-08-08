@@ -4,6 +4,7 @@ import java.util.*;
 
 public class TestClass {
     int i= 1;
+    boolean b =true;
     String s = "2";
     InnerTestClass o;
     ArrayList<String> list;

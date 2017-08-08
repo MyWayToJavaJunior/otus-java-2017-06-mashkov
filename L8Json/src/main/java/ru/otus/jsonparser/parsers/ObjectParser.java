@@ -1,5 +1,6 @@
 package ru.otus.jsonparser.parsers;
 import ru.otus.jsonparser.Context;
+import ru.otus.jsonparser.JsonParserException;
 import ru.otus.jsonparser.abstractClasses.Parser;
 import ru.otus.testFramework.ReflectionHelper;
 
@@ -9,7 +10,7 @@ import javax.json.JsonValue;
 import java.lang.reflect.Field;
 
 public class ObjectParser extends Parser {
-    public JsonValue parse(Object object, Context context) {
+    public JsonValue parse(Object object, Context context) throws JsonParserException {
         JsonObjectBuilder builder = Json.createObjectBuilder();
 
         Field[] fields = ReflectionHelper.getFields(object);

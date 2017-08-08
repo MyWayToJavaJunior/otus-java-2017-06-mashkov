@@ -1,6 +1,7 @@
 package ru.otus.jsonparser.parsers;
 
 import ru.otus.jsonparser.Context;
+import ru.otus.jsonparser.JsonParserException;
 import ru.otus.jsonparser.abstractClasses.Parser;
 
 import javax.json.Json;
@@ -11,7 +12,7 @@ import java.util.Map;
 
 public class MapParser extends Parser {
     @Override
-    public JsonValue parse(Object object, Context context) {
+    public JsonValue parse(Object object, Context context) throws JsonParserException {
         if (object instanceof AbstractMap){
             JsonObjectBuilder builder = Json.createObjectBuilder();
 
@@ -22,6 +23,9 @@ public class MapParser extends Parser {
             }
             
             return builder.build();
-        } else return getNext().parse(object, context);
+        } else {
+            if (hasNext()) return getNext().parse(object, context);
+        }
+        throw new JsonParserException("Не определён тип!");
     }
 }
