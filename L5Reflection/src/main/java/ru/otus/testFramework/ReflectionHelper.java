@@ -27,12 +27,19 @@ public class ReflectionHelper {
     }
 
     public static <T>Field[] getFields(T obj){
-        Field[] fields = obj.getClass().getDeclaredFields();
-        return fields;
+
+        return getFields(obj.getClass());
     }
 
     public static <T> Field[] getFields(Class<T> clazz){
-        return clazz.getDeclaredFields();
+        List<Field> fieldList = new ArrayList<>();
+        Class tmpClass = clazz;
+        while (tmpClass != null) {
+            fieldList.addAll(Arrays.asList(tmpClass.getDeclaredFields()));
+            tmpClass = tmpClass .getSuperclass();
+        }
+
+        return listToArray(fieldList);
     }
 
     public static Object getFieldValue(Object object, String name) {
@@ -98,5 +105,14 @@ public class ReflectionHelper {
                 .map(Object::getClass)
                 .collect(Collectors.toList());
         return classes.toArray(new Class<?>[classes.size()]);
+    }
+
+    static private Field[] listToArray(List<Field> fields){
+        Field[] fieldsArray = new Field[fields.size()];
+
+        for (int i = 0; i < fields.size(); i++) {
+            fieldsArray[i] = fields.get(i);
+        }
+        return fieldsArray;
     }
 }

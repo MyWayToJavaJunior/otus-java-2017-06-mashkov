@@ -5,13 +5,15 @@ import ru.otus.models.DataSet;
 import ru.otus.testFramework.ReflectionHelper;
 
 import javax.persistence.Column;
+import javax.persistence.Id;
 import javax.persistence.Table;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.StringJoiner;
 
 public class Executor {
     private Connection connection;
@@ -41,8 +43,8 @@ public class Executor {
 
 
             StringBuilder builder = new StringBuilder();
-            StringBuilder nameBuilder = new StringBuilder();
-            StringBuilder valueBuilder = new StringBuilder();
+            StringJoiner nameBuilder = new StringJoiner(",");
+            StringJoiner valueBuilder = new StringJoiner(",");
             builder.append("insert into ");
 
 
@@ -61,15 +63,13 @@ public class Executor {
                     String columnName = ((Column) annotation).name();
                     Object value = ReflectionHelper.getFieldValue(user, field.getName());
 
-                    nameBuilder.append(columnName);
+                    nameBuilder.add(columnName);
+                    String stringValue;
                     if (value instanceof String) {
-                        valueBuilder.append("'").append(value).append("'");
-                    } else valueBuilder.append(value);
+                        stringValue = "'" + value + "'";
+                    } else stringValue = value.toString();
+                    valueBuilder.add(stringValue);
 
-                    if (i != fieldsLength - 1) {
-                        nameBuilder.append(", ");
-                        valueBuilder.append(", ");
-                    }
 
                 }
                 System.out.println(annotation);
@@ -94,6 +94,20 @@ public class Executor {
         }
     }
 
+    private <T extends DataSet> T load(String query, Class<T> clazz) throws MappingException, SQLException {
+
+        System.out.println("Executing " + query);
+
+        T result = execQuery(query, resultSet -> {
+            resultSet.next();
+            return process(resultSet, clazz);
+        });
+
+        return result;
+
+    }
+
+
     public <T extends DataSet> T load(long id, Class<T> clazz) throws MappingException, SQLException {
 
 
@@ -102,18 +116,7 @@ public class Executor {
         if (tableAnnotation != null) {
 
             String query = "select * from " + ((Table) tableAnnotation).name() + " where id=" + id;
-            T result = execQuery(query, resultSet -> {
-                resultSet.next();
-                Field[] fields = ReflectionHelper.getFields(clazz);
-                T obj = ReflectionHelper.instantiate(clazz);
-                for (Field field : fields) {
-                    Annotation fieldAnnotation = field.getAnnotation(Column.class);
-                    if (fieldAnnotation != null) {
-                        ReflectionHelper.setFieldValue(obj, field.getName(), resultSet.getObject(((Column) fieldAnnotation).name()));
-                    }
-                }
-                return obj;
-            });
+            T result = load(query, clazz);
 
             result.setId(id);
 
@@ -123,6 +126,65 @@ public class Executor {
             throw new MappingException("Не могу сохранить объект. Нет названия таблицы!");
         }
     }
+
+    public <T extends DataSet> T loadByName(String name, Class<T> clazz) throws MappingException, SQLException {
+        Annotation tableAnnotation = clazz.getAnnotation(Table.class);
+
+        if (tableAnnotation != null) {
+
+            String query = "select * from " + ((Table) tableAnnotation).name() + " where name='" + name + "'";
+            T result = load(query, clazz);
+
+            //result.setId(id);
+
+            return result;
+
+        } else {
+            throw new MappingException("Не могу сохранить объект. Нет названия таблицы!");
+        }
+    }
+
+    public <T extends DataSet> List<T> loadAll(Class<T> clazz) throws MappingException, SQLException {
+        Annotation tableAnnotation = clazz.getAnnotation(Table.class);
+
+        final List<T> result = new ArrayList<>();
+        if (tableAnnotation != null) {
+            String query = "select * from " + ((Table) tableAnnotation).name();
+            execQuery(query, resultSet -> {
+                while (resultSet.next()){
+                    result.add(process(resultSet, clazz));
+                }
+                return null;
+            });
+
+        } else {
+            throw new MappingException("Не могу сохранить объект. Нет названия таблицы!");
+        }
+
+        return result;
+    }
+
+    private <T extends DataSet> T process(ResultSet resultSet, Class<T> clazz) throws SQLException {
+        Field[] fields = ReflectionHelper.getFields(clazz);
+        T obj = ReflectionHelper.instantiate(clazz);
+        for (Field field : fields) {
+            System.out.println("field " + field);
+            Annotation fieldAnnotation = field.getAnnotation(Column.class);
+            if (fieldAnnotation != null) {
+                ReflectionHelper.setFieldValue(obj, field.getName(), resultSet.getObject(((Column) fieldAnnotation).name()));
+            } else {
+                Annotation idAnnotation = field.getAnnotation(Id.class);
+                if (idAnnotation != null) {
+                    Long id = resultSet.getLong("id");
+                    System.out.println("id: " + id);
+                    obj.setId(id);
+                }
+            }
+        }
+        return obj;
+    }
+
+
 
 
 }

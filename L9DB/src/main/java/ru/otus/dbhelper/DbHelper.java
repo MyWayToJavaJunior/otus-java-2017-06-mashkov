@@ -8,18 +8,25 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class DbHelper {
+    private static Connection connection;
+
     public static Connection getConnection(){
-        try {
-            DriverManager.registerDriver(new Driver());
-            String url = "jdbc:postgresql://"+
-                    "localhost:5432/"+
-                    "myBase";
+        if (connection==null) {
+            try {
+                DriverManager.registerDriver(new Driver());
+                String url = "jdbc:postgresql://"+
+                        "localhost:5432/"+
+                        "myBase";
+                connection = DriverManager.getConnection(url,"anton", "anton");
 
-            return DriverManager.getConnection(url,"anton", "anton");
 
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         }
+
+        return connection;
+
     }
 
     public static void example(){
@@ -30,5 +37,14 @@ public class DbHelper {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void close(){
+        try {
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        connection=null;
     }
 }

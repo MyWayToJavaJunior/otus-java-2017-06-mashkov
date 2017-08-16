@@ -19,6 +19,7 @@
         <module>L7AtmDepartment</module>
         <module>L8Json</module>
         <module>L9DB</module>
+        <module>L10_1_DBService</module>
     </modules>
 
 </project>

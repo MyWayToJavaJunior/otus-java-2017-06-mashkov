@@ -10,6 +10,7 @@ import ru.otus.models.UserDataSet;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -65,10 +66,46 @@ class ExecutorTest {
     }
 
     @org.junit.jupiter.api.Test
+    void loadByName(){
+        UserDataSet expected = new UserDataSet("smith", 30);
+        try {
+            executor.save(expected);
+            UserDataSet actual = executor.loadByName(expected.getName(), UserDataSet.class);
+            System.out.println("expected " + expected);
+            System.out.println("actual " + actual);
+            assertEquals(expected.getName(), actual.getName());
+            assertEquals(expected.getName(), actual.getName());
+            assertEquals(expected.getId(), actual.getId());
+        } catch (MappingException | SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    @org.junit.jupiter.api.Test
+    void loadAllTest(){
+        UserDataSet user1 = new UserDataSet("barack obama", 50);
+        UserDataSet user2 = new UserDataSet("george bush", 70);
+
+        try {
+            executor.save(user1);
+            executor.save(user2);
+
+            List<UserDataSet> users = executor.loadAll(UserDataSet.class);
+
+            assertEquals(2, users.size());
+        } catch (SQLException | MappingException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @org.junit.jupiter.api.Test
     void exception(){
         Throwable throwable = assertThrows(MappingException.class, ()-> executor.save(new ExceptionDataSet()));
         assertEquals("Не могу сохранить объект. Нет названия таблицы!", throwable.getMessage());
     }
+
 
     @AfterAll
     static void tearDown() {
