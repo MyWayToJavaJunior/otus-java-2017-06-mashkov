@@ -15,7 +15,7 @@ public class UserDataSet extends DataSet {
     private int age;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private AddressDataSet addres;
+    private AddressDataSet address;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<PhoneDataSet> phones;
@@ -24,19 +24,19 @@ public class UserDataSet extends DataSet {
 
     }
 
-    public UserDataSet(String name, int age, AddressDataSet addres) {
+    public UserDataSet(String name, int age, AddressDataSet address) {
         this.name = name;
         this.age = age;
-        this.addres = addres;
+        this.address = address;
         this.phones = new ArrayList<>();
     }
 
-    public AddressDataSet getAddres() {
-        return addres;
+    public AddressDataSet getAddress() {
+        return address;
     }
 
-    public void setAddres(AddressDataSet addres) {
-        this.addres = addres;
+    public void setAddress(AddressDataSet address) {
+        this.address = address;
     }
 
     public void addPhone(PhoneDataSet phone){
