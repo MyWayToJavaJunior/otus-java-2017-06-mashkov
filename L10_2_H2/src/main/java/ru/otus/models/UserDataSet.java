@@ -1,25 +1,46 @@
 package ru.otus.models;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
 public class UserDataSet extends DataSet {
 
     @Column(name = "name")
-    String name;
+    private String name;
+
     @Column(name = "age", nullable = false)
-    int age;
+    private int age;
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private AddressDataSet addres;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<PhoneDataSet> phones;
 
     public UserDataSet(){
 
     }
 
-    public UserDataSet(String name, int age) {
+    public UserDataSet(String name, int age, AddressDataSet addres) {
         this.name = name;
         this.age = age;
+        this.addres = addres;
+        this.phones = new ArrayList<>();
+    }
+
+    public AddressDataSet getAddres() {
+        return addres;
+    }
+
+    public void setAddres(AddressDataSet addres) {
+        this.addres = addres;
+    }
+
+    public void addPhone(PhoneDataSet phone){
+        phones.add(phone);
     }
 
     public String getName() {

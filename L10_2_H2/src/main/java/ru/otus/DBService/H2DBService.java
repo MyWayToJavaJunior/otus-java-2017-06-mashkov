@@ -8,6 +8,8 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 import ru.otus.DAO.UserDataSetDao;
 import ru.otus.interfaces.DBService;
+import ru.otus.models.AddressDataSet;
+import ru.otus.models.PhoneDataSet;
 import ru.otus.models.UserDataSet;
 
 import java.util.List;
@@ -21,7 +23,8 @@ public class H2DBService implements DBService {
         Configuration configuration = new Configuration();
 
         configuration.addAnnotatedClass(UserDataSet.class);
-        //configuration.addAnnotatedClass(PhoneDataSet.class);
+        configuration.addAnnotatedClass(AddressDataSet.class);
+        configuration.addAnnotatedClass(PhoneDataSet.class);
 
         configuration.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
         configuration.setProperty("hibernate.connection.driver_class", "org.postgresql.Driver");
@@ -52,8 +55,11 @@ public class H2DBService implements DBService {
     @Override
     public void save(UserDataSet dataSet) {
         try (Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
             UserDataSetDao dao = new UserDataSetDao(session);
             dao.save(dataSet);
+            session.getTransaction().commit();
+            session.close();
         }
     }
 
