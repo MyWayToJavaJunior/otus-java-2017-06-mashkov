@@ -2,7 +2,6 @@ package ru.otus.executor;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import ru.otus.annotations.Test;
 import ru.otus.dbhelper.DbHelper;
 import ru.otus.exceptions.MappingException;
 import ru.otus.models.DataSet;
