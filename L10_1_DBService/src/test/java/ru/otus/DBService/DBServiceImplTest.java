@@ -20,18 +20,19 @@ class DBServiceImplTest {
     @BeforeAll
     static void setUp() {
         try {
+            executor = new Executor(DbHelper.getConnection());
+            dbService = new DBServiceImpl();
             DbHelper.getConnection().setAutoCommit(false);
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        executor = new Executor(DbHelper.getConnection());
-        dbService = new DBServiceImpl();
+
     }
 
     @BeforeEach
     void before(){
         try {
-            executor.execUpdate("create table if not exists users (id  bigserial not null, name varchar(256), age int not null, primary key (id))");
+            executor.execUpdate("create table if not exists users2 (id  bigserial not null, name varchar(256), age int not null, primary key (id))");
             DbHelper.getConnection().commit();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -52,7 +53,7 @@ class DBServiceImplTest {
 
     @AfterEach
     void after() throws SQLException {
-        executor.execUpdate("drop table users");
+        executor.execUpdate("drop table users2");
     }
 
     @Test

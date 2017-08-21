@@ -15,11 +15,6 @@ public class DBServiceImpl implements DBService {
 
     public DBServiceImpl(){
         connection = DbHelper.getConnection();
-        try {
-            connection.setAutoCommit(false);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
@@ -37,7 +32,6 @@ public class DBServiceImpl implements DBService {
         UserDataSetDao dao = new UserDataSetDao(connection);
         try {
             dao.save(dataSet);
-            connection.commit();
         } catch (MappingException | SQLException e) {
             try {
                 connection.rollback();
@@ -54,7 +48,6 @@ public class DBServiceImpl implements DBService {
         UserDataSet result = null;
         try {
             result = dao.read(id);
-            connection.commit();
         } catch (MappingException | SQLException e) {
             try {
                 connection.rollback();
@@ -72,7 +65,6 @@ public class DBServiceImpl implements DBService {
         UserDataSet result = null;
         try {
             result = dao.readByName(name);
-            connection.commit();
         } catch (MappingException | SQLException e) {
             try {
                 connection.rollback();
@@ -90,7 +82,6 @@ public class DBServiceImpl implements DBService {
         List<UserDataSet> result = null;
         try {
             result = dao.readAll();
-            connection.commit();
         } catch (MappingException | SQLException e) {
             try {
                 connection.rollback();
