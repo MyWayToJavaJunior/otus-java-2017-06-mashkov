@@ -19,13 +19,10 @@ class DBServiceImplTest {
 
     @BeforeAll
     static void setUp() {
-        try {
             executor = new Executor(DbHelper.getConnection());
             dbService = new DBServiceImpl();
-            DbHelper.getConnection().setAutoCommit(false);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+            //DbHelper.getConnection().setAutoCommit(false);
+
 
     }
 
@@ -33,7 +30,6 @@ class DBServiceImplTest {
     void before(){
         try {
             executor.execUpdate("create table if not exists users2 (id  bigserial not null, name varchar(256), age int not null, primary key (id))");
-            DbHelper.getConnection().commit();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -42,13 +38,8 @@ class DBServiceImplTest {
 
     @AfterAll
     static void tearDown() {
-        try {
-            DbHelper.getConnection().setAutoCommit(true);
 
-            DbHelper.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        DbHelper.close();
     }
 
     @AfterEach
@@ -64,7 +55,6 @@ class DBServiceImplTest {
         UserDataSet actualUser = null;
         try {
             actualUser = executor.load(user.getId(), UserDataSet.class);
-            DbHelper.getConnection().commit();
         } catch (SQLException | MappingException e) {
             e.printStackTrace();
         }
@@ -80,7 +70,6 @@ class DBServiceImplTest {
         UserDataSet expectedUser = new UserDataSet("john", 34);
         try {
             executor.save(expectedUser);
-            DbHelper.getConnection().commit();
         } catch (SQLException | MappingException e) {
             e.printStackTrace();
         }
@@ -96,7 +85,6 @@ class DBServiceImplTest {
         UserDataSet expectedUser = new UserDataSet("john", 21);
         try {
             executor.save(expectedUser);
-            DbHelper.getConnection().commit();
         } catch (SQLException | MappingException e) {
             e.printStackTrace();
         }
@@ -117,7 +105,6 @@ class DBServiceImplTest {
             executor.save(user1);
             executor.save(user2);
             executor.save(user3);
-            DbHelper.getConnection().commit();
         } catch (SQLException | MappingException e) {
             e.printStackTrace();
         }

@@ -21,6 +21,8 @@
         <module>L9DB</module>
         <module>L10_1_DBService</module>
         <module>L10_2_H2</module>
+        <module>L11_1_Cache</module>
+        <module>L11_1_UsageCache</module>
     </modules>
 
 </project>
