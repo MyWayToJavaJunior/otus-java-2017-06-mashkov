@@ -20,11 +20,7 @@ public class Executor {
 
     public Executor(Connection connection) {
         this.connection = connection;
-        try {
-            connection.setAutoCommit(false);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+
     }
 
     public int execUpdate(String update) throws SQLException {
@@ -90,7 +86,6 @@ public class Executor {
 
             System.out.println("Executing: " + builder.toString());
             int result = stmt.executeUpdate(builder.toString(), Statement.RETURN_GENERATED_KEYS);
-            connection.commit();
             ResultSet rs = stmt.getGeneratedKeys();
             rs.next();
             long id = rs.getLong(1);

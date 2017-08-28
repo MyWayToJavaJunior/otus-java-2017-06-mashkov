@@ -89,7 +89,7 @@ class SimpleCacheEngineTest {
     }
 
     @Test
-    void weakRefTest(){
+    void softRefTest(){
         int max = 1000;
 
         SimpleCacheEngine<Integer, BigObj> cache = new CacheBuilder<Integer, BigObj>()
