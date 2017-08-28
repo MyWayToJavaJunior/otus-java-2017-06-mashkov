@@ -5,6 +5,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.cfg.Environment;
 import org.hibernate.service.ServiceRegistry;
 import ru.otus.DAO.UserDataSetDao;
 import ru.otus.interfaces.DBService;
@@ -36,6 +37,7 @@ public class H2DBService implements DBService {
         configuration.setProperty("hibernate.connection.useSSL", "false");
         configuration.setProperty("hibernate.enable_lazy_load_no_trans", "true");
         configuration.setProperty("hibernate.jdbc.time_zone", "UTC");
+        configuration.setProperty(Environment.FORMAT_SQL, "true");
 
         sessionFactory = createSessionFactory(configuration);
     }
