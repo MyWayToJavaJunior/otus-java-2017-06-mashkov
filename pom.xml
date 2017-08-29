@@ -23,6 +23,7 @@
         <module>L10_2_H2</module>
         <module>L11_1_Cache</module>
         <module>L11_1_UsageCache</module>
+        <module>L12_Jetty</module>
     </modules>
 
 </project>
