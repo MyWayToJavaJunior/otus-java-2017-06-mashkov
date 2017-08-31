@@ -1,4 +1,4 @@
-package ru.otus.cache;
+package ru.otus.simplecache.cache;
 
 import java.util.*;
 import java.util.function.Function;
@@ -99,5 +99,6 @@ public class CacheEngineImpl<K, V> implements CacheEngine<K, V> {
     public void setMemoryManagement(MemoryManager management){
         this.memoryManagement = management;
     }
+
 
 }

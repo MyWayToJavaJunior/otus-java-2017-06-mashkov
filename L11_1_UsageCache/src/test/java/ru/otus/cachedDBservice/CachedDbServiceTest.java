@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import ru.otus.dbhelper.DbHelper;
 import ru.otus.executor.Executor;
 import ru.otus.models.UserDataSet;
-import ru.otus.simplecache.CacheBuilder;
+import ru.otus.simplecache.CacheFactory;
 import ru.otus.simplecache.SimpleCache;
 
 import java.sql.SQLException;
@@ -27,7 +27,7 @@ class CachedDbServiceTest {
             e.printStackTrace();
         }
 
-        cache = new CacheBuilder<Long, UserDataSet>()
+        cache = new CacheFactory<Long, UserDataSet>()
                 .getEternalCache(3)
                 .setExtractor(UserDataSet::getId)
                 .build();

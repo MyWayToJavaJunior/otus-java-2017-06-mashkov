@@ -21,8 +21,8 @@ class SimpleCacheEngineTest {
 
     @Test
     void putMaxElem() {
-        SimpleCacheEngine<Integer, TestObj> cache = new CacheBuilder<Integer, TestObj>()
-                .getEternalCache(3).build();
+        SimpleCacheEngine<Integer, TestObj> cache = new CacheFactory<Integer, TestObj>()
+                .getEternalCache(3);
         int size = 10;
         for (int i = 0; i < size; i++) {
             cache.put(i, new TestObj(i, "name"+i));
@@ -39,8 +39,8 @@ class SimpleCacheEngineTest {
 
     @Test
     void putLiveTime(){
-        SimpleCacheEngine<Integer, TestObj> cache = new CacheBuilder<Integer, TestObj>()
-                .getLiveCache(3, 100).build();
+        SimpleCacheEngine<Integer, TestObj> cache = new CacheFactory<Integer, TestObj>()
+                .getLiveCache(3, 100);
         int size = 10;
         for (int i = 0; i < size; i++) {
             cache.put(i, new TestObj(i, "name"+i));
@@ -60,8 +60,8 @@ class SimpleCacheEngineTest {
 
     @Test
     void putIdleTime(){
-        SimpleCacheEngine<Integer, TestObj> cache = new CacheBuilder<Integer, TestObj>()
-                .getIdleCache(3, 200).build();
+        SimpleCacheEngine<Integer, TestObj> cache = new CacheFactory<Integer, TestObj>()
+                .getIdleCache(3, 200);
         int size = 3;
         for (int i = 0; i < size; i++) {
             cache.put(i, new TestObj(i, "name"+i));
@@ -92,8 +92,8 @@ class SimpleCacheEngineTest {
     void softRefTest(){
         int max = 1000;
 
-        SimpleCacheEngine<Integer, BigObj> cache = new CacheBuilder<Integer, BigObj>()
-                .getEternalCache(max).build();
+        SimpleCacheEngine<Integer, BigObj> cache = new CacheFactory<Integer, BigObj>()
+                .getEternalCache(max);
 
         for (int i = 0; i < max; i++) {
             cache.put(i, new BigObj());
@@ -117,22 +117,7 @@ class SimpleCacheEngineTest {
 
 
     }
-    @Test
-    void extractorTest(){
-        TestObj testObj = new TestObj(1,"Bill");
-        SimpleCacheEngine<String, TestObj> cache = new CacheBuilder<String, TestObj>()
-                .getEternalCache(3)
-                .setExtractor(o->o.name)
-                .build();
 
-        try {
-            cache.put(testObj);
-        } catch (CacheException e) {
-            e.printStackTrace();
-        }
-
-        Assertions.assertEquals(testObj, cache.get(testObj.name).orElse(null));
-    }
 
     static class TestObj{
         int id;

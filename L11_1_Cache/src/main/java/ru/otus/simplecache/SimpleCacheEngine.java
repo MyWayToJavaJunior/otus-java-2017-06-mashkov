@@ -1,33 +1,20 @@
 package ru.otus.simplecache;
 
-import ru.otus.cache.CacheEngineImpl;
-import ru.otus.cache.MemoryManager;
-import ru.otus.cache.MyElement;
+import ru.otus.simplecache.cache.CacheEngineImpl;
+import ru.otus.simplecache.cache.MemoryManager;
+import ru.otus.simplecache.cache.MyElement;
 
 import java.lang.ref.SoftReference;
-import java.lang.ref.WeakReference;
 import java.util.Optional;
 
 public class SimpleCacheEngine<K, V> implements SimpleCache<K,V>{
 
     private CacheEngineImpl<K, SoftReference<V>> cacheEngine;
 
-    private KeyExtractor<K,V> extractor;
-
     private int missCount = 0;
 
-    public SimpleCacheEngine(int maxElements, long lifeTimeMs, long idleTimeMs, boolean isEternal) {
+    SimpleCacheEngine(int maxElements, long lifeTimeMs, long idleTimeMs, boolean isEternal) {
         cacheEngine = new CacheEngineImpl<>(maxElements, lifeTimeMs, idleTimeMs, isEternal);
-        extractor = defaultExtractor;
-    }
-
-    public void setExtractor(KeyExtractor<K,V> extractor){
-        this.extractor = extractor;
-    }
-
-    @Override
-    public void put(V element) throws CacheException {
-        cacheEngine.put(new MyElement<>(extractor.extract(element), new SoftReference<>(element)));
     }
 
     @Override
@@ -69,11 +56,4 @@ public class SimpleCacheEngine<K, V> implements SimpleCache<K,V>{
         cacheEngine.setMemoryManagement(management);
     }
 
-    private KeyExtractor<K, V> defaultExtractor = element -> {
-        throw new CacheException("Missing extractor");
-    };
-
-    public interface KeyExtractor<K, V>{
-        K extract(V element) throws CacheException;
-    }
 }

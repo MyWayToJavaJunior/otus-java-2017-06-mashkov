@@ -1,6 +1,4 @@
-package ru.otus.cache;
-
-import java.util.Map;
+package ru.otus.simplecache.cache;
 
 public enum  MemoryManagement{
     FIFO((elements) -> elements.keySet().iterator().next()),

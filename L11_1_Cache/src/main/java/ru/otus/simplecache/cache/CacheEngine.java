@@ -1,4 +1,4 @@
-package ru.otus.cache;
+package ru.otus.simplecache.cache;
 
 /**
  * Created by tully.
