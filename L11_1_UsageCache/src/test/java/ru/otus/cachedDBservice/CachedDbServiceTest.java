@@ -28,9 +28,7 @@ class CachedDbServiceTest {
         }
 
         cache = new CacheFactory<Long, UserDataSet>()
-                .getEternalCache(3)
-                .setExtractor(UserDataSet::getId)
-                .build();
+                .getEternalCache(3);
         dbService = new CachedDbService(cache);
 
         try {

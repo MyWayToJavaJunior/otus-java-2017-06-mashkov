@@ -9,11 +9,11 @@ import ru.otus.simplecache.SimpleCache;
 import java.util.List;
 import java.util.Optional;
 
-public class CachedDbService  implements DBService{
+public class CachedDbService implements DBService {
     private DBService dbService;
     private SimpleCache<Long, UserDataSet> userDataSetCache;
 
-    CachedDbService(SimpleCache<Long, UserDataSet> cache){
+    CachedDbService(SimpleCache<Long, UserDataSet> cache) {
         dbService = new DBServiceImpl();
         userDataSetCache = cache;
 
@@ -25,13 +25,10 @@ public class CachedDbService  implements DBService{
     }
 
     @Override
-    public void save(UserDataSet dataSet){
+    public void save(UserDataSet dataSet) {
         dbService.save(dataSet);
-        try {
-            userDataSetCache.put(dataSet);
-        } catch (CacheException e) {
-            e.printStackTrace();
-        }
+        userDataSetCache.put(dataSet.getId(), dataSet);
+
     }
 
     @Override
@@ -40,11 +37,8 @@ public class CachedDbService  implements DBService{
         if (result.isPresent()) return result.get();
         else {
             UserDataSet dataSet = dbService.read(id);
-            try {
-                userDataSetCache.put(dataSet);
-            } catch (CacheException e) {
-                e.printStackTrace();
-            }
+            userDataSetCache.put(dataSet.getId(), dataSet);
+
             return dataSet;
         }
 
@@ -54,11 +48,9 @@ public class CachedDbService  implements DBService{
     public UserDataSet readByName(String name) {
         //как работать с кешем если он типизирован по id? Можно завести кеш, типизированный по name?
         UserDataSet dataSet = dbService.readByName(name);
-        try {
-            userDataSetCache.put(dataSet);
-        } catch (CacheException e) {
-            e.printStackTrace();
-        }
+
+        userDataSetCache.put(dataSet.getId(), dataSet);
+
         return dataSet;
     }
 
@@ -67,11 +59,8 @@ public class CachedDbService  implements DBService{
         //как получить данные из кеша, а чего не хватает из базы?
         List<UserDataSet> list = dbService.readAll();
         list.forEach(userDataSet -> {
-            try {
-                userDataSetCache.put(userDataSet);
-            } catch (CacheException e) {
-                e.printStackTrace();
-            }
+            userDataSetCache.put(userDataSet.getId(), userDataSet);
+
         });
         return list;
     }
