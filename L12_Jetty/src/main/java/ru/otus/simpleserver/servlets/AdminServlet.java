@@ -1,12 +1,8 @@
 package ru.otus.simpleserver.servlets;
 
-import org.eclipse.jetty.server.Authentication;
 import ru.otus.models.UserDataSet;
 import ru.otus.simpleserver.TemplateProcessor;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,8 +11,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AdminServlet extends HttpServlet {
-    Map<String, UserDataSet> authorized;
-    String userName = "anonymous";
+    private Map<String, UserDataSet> authorized;
+    private String userName = "anonymous";
 
     public AdminServlet(Map<String, UserDataSet> authorized){
         this.authorized = authorized;
@@ -35,26 +31,18 @@ public class AdminServlet extends HttpServlet {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
-
         } else {
             try {
                 body.put("body", TemplateProcessor.instance().getPage("authRequest.html", data));
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
         }
-
-
-
-
         try {
             response.getWriter().write(TemplateProcessor.instance().getPage("admin.html", body));
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         response.setContentType("text/html; charset=UTF-8");
         response.setHeader("Access-Control-Allow-Origin", "*");
         response.setStatus( HttpServletResponse.SC_OK );
