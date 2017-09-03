@@ -66,11 +66,7 @@ public class DBServiceImpl implements DBService {
         try {
             result = dao.readByName(name);
         } catch (MappingException | SQLException e) {
-            try {
-                connection.rollback();
-            } catch (SQLException e1) {
-                e1.printStackTrace();
-            }
+            
             e.printStackTrace();
         }
         return result;

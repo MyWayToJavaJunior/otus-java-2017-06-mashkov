@@ -12,12 +12,18 @@ public class UserDataSet extends DataSet {
     String name;
     @Column(name = "age", nullable = false)
     int age;
+    @Column(name = "pass")
+    String pass;
+    @Column(name = "status")
+    String status;
 
     public UserDataSet(){
-
+        pass=" ";
+        status = "user";
     }
 
     public UserDataSet(String name, int age) {
+        this();
         this.name = name;
         this.age = age;
     }
@@ -36,6 +42,22 @@ public class UserDataSet extends DataSet {
 
     public void setAge(int age) {
         this.age = age;
+    }
+
+    public String getPass() {
+        return pass;
+    }
+
+    public void setPass(String pass) {
+        this.pass = pass;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     @Override

@@ -22,7 +22,7 @@ class CachedDbServiceTest {
     void setUp(){
         executor = new Executor(DbHelper.getConnection());
         try {
-            executor.execUpdate("create table if not exists users2 (id  bigserial not null, name varchar(256), age int not null, primary key (id))");
+            executor.execUpdate("create table if not exists users2 (id  bigserial not null, name varchar(256),pass varchar(256),status varchar(256), age int not null, primary key (id))");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -31,11 +31,6 @@ class CachedDbServiceTest {
                 .getEternalCache(3);
         dbService = new CachedDbService(cache);
 
-        try {
-            executor.execUpdate("create table if not exists users2 (id  bigserial not null, name varchar(256), age int not null, primary key (id))");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
     }
     @AfterEach
     void tearDown(){

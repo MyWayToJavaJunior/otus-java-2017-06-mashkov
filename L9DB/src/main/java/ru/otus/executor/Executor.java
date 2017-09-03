@@ -101,6 +101,7 @@ public class Executor {
 
         T result = execQuery(query, resultSet -> {
             resultSet.next();
+            if (resultSet.getRow() == 0) return null;
             return process(resultSet, clazz);
         });
 
@@ -166,6 +167,8 @@ public class Executor {
     }
 
     private <T extends DataSet> T process(ResultSet resultSet, Class<T> clazz) throws SQLException {
+        //System.out.println("resultSet: "+resultSet.getRow());
+        if (resultSet.getRow() == 0) return null;
         Field[] fields = ReflectionHelper.getFields(clazz);
         T obj = ReflectionHelper.instantiate(clazz);
         for (Field field : fields) {

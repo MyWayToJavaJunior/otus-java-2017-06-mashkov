@@ -52,6 +52,12 @@ public class SimpleCacheEngine<K, V> implements SimpleCache<K,V>{
         cacheEngine.dispose();
     }
 
+    public int getDeadReferences(){
+        return  missCount;
+    }
+
+
+
     void setMemoryManagement(MemoryManager management){
         cacheEngine.setMemoryManagement(management);
     }

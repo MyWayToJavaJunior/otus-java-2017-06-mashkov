@@ -13,7 +13,7 @@ public class CachedDbService implements DBService {
     private DBService dbService;
     private SimpleCache<Long, UserDataSet> userDataSetCache;
 
-    CachedDbService(SimpleCache<Long, UserDataSet> cache) {
+    public CachedDbService(SimpleCache<Long, UserDataSet> cache) {
         dbService = new DBServiceImpl();
         userDataSetCache = cache;
 
@@ -49,7 +49,7 @@ public class CachedDbService implements DBService {
         //как работать с кешем если он типизирован по id? Можно завести кеш, типизированный по name?
         UserDataSet dataSet = dbService.readByName(name);
 
-        userDataSetCache.put(dataSet.getId(), dataSet);
+        if (dataSet!=null) userDataSetCache.put(dataSet.getId(), dataSet);
 
         return dataSet;
     }

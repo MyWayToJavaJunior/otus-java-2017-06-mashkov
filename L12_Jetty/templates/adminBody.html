@@ -1,0 +1,22 @@
+<script>
+    $(function () {
+       function setData() {
+           $.get("/status", function (data) {
+               $("#hit").text(data.hit);
+               $("#miss").text(data.miss);
+               $("#ref").text(data.dead);
+           })
+       }
+
+       setInterval(setData, 100);
+
+    })
+</script>
+
+<h2>Admin page</h2>
+<div><a href="index.html">Main page</a> | <a href="/login">Login page</a></div>
+<h3>Cache state</h3>
+<div id="user">User: ${user}</div>
+<div>Hit count: <span id="hit"></span></div>
+<div>Miss count: <span id="miss"></span></div>
+<div>Dead reference count: <span id="ref"></span></div>
