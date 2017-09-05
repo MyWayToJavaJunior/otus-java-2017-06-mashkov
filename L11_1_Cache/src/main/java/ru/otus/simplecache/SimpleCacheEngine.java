@@ -13,6 +13,10 @@ public class SimpleCacheEngine<K, V> implements SimpleCache<K,V>{
 
     private int missCount = 0;
 
+    public SimpleCacheEngine(){
+
+    }
+
     SimpleCacheEngine(int maxElements, long lifeTimeMs, long idleTimeMs, boolean isEternal) {
         cacheEngine = new CacheEngineImpl<>(maxElements, lifeTimeMs, idleTimeMs, isEternal);
     }

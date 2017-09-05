@@ -24,6 +24,7 @@
         <module>L11_1_Cache</module>
         <module>L11_1_UsageCache</module>
         <module>L12_Jetty</module>
+        <module>L13_War</module>
     </modules>
 
 </project>
