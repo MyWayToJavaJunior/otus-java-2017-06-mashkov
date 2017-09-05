@@ -28,9 +28,9 @@
                             <!-- Relative path to the pom.xml directory -->
                             <directory>public_html</directory>
                         </resource>
-                        <resource>
+                        <!--<resource>
                             <directory>templates</directory>
-                        </resource>
+                        </resource>-->
                     </webResources>
                 </configuration>
             </plugin>

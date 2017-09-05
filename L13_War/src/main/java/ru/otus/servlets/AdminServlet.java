@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 import ru.otus.models.UserDataSet;
+import ru.otus.simplecache.SimpleCache;
+import ru.otus.simplecache.SimpleCacheEngine;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -19,6 +21,8 @@ public class AdminServlet extends HttpServlet {
 
     @Autowired
     private AuthService authService;
+    @Autowired
+    private SimpleCacheEngine cacheEngine;
     private String userName = "anonymous";
 
     public AdminServlet(){
@@ -33,6 +37,8 @@ public class AdminServlet extends HttpServlet {
     }
 
     public void doGet(HttpServletRequest request, HttpServletResponse response){
+        startTestCache();
+
         String id = request.getSession().getId();
         Map<String, Object> body = new HashMap<>();
         Map<String, Object> data = new HashMap<>();
@@ -60,6 +66,29 @@ public class AdminServlet extends HttpServlet {
         response.setContentType("text/html; charset=UTF-8");
         response.setHeader("Access-Control-Allow-Origin", "*");
         response.setStatus( HttpServletResponse.SC_OK );
+    }
+
+    private void startTestCache(){
+        new Thread(() -> {
+            int size = 100;
+
+            while (true){
+                for (int i = 10; i < size; i++) {
+                    cacheEngine.put((long) i, new UserDataSet("user"+i, i));
+                }
+
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                for (int i = 10; i < size; i++) {
+
+                    cacheEngine.get((long)i);
+                }
+            }
+        }).start();
     }
 
 

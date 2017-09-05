@@ -34,6 +34,7 @@ public class LoginServlet extends HttpServlet {
     }
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) {
+
         Map<String, Object> data = new HashMap<>();
         data.put("user", "anonymous");
         data.put("message", "Paste user name and password");
