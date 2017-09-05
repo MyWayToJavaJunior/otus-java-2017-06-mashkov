@@ -1,8 +1,6 @@
 package departament;
 
-import com.sun.xml.internal.ws.server.UnsupportedMediaException;
-import ru.otus.atm.OutOfExchangeException;
-import ru.otus.atm.OutOfMoneyException;
+
 import ru.otus.interfaces.ATMmashine;
 import ru.otus.interfaces.Strategy;
 
@@ -28,15 +26,15 @@ public class AtmDepartment implements ATMmashine {
         atMmashines.forEach(ATMmashine::setDefaultMoney);
     }
 
-    public void getMoney(long summ) throws OutOfMoneyException, OutOfExchangeException {
-        throw new UnsupportedMediaException("Метод не работает, обратитесь в банкомат");
+    public void getMoney(long summ) throws Exception {
+        throw new Exception("Метод не работает, обратитесь в банкомат");
     }
 
     public void setStrategy(Strategy strategy) {
         atMmashines.forEach(atm->atm.setStrategy(strategy));
     }
 
-    public void getMoney(long summ, int numOfAtm) throws OutOfMoneyException, OutOfExchangeException {
+    public void getMoney(long summ, int numOfAtm) throws Exception {
         if (numOfAtm>=atMmashines.size()) return;
         atMmashines.get(numOfAtm).getMoney(summ);
     }

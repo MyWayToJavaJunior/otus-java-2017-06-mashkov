@@ -6,6 +6,6 @@ import ru.otus.atm.OutOfMoneyException;
 public interface ATMmashine {
     long getBalance();
     void setDefaultMoney();
-    void getMoney(long summ) throws OutOfMoneyException, OutOfExchangeException;
+    void getMoney(long summ) throws Exception;
     void setStrategy(Strategy strategy);
 }

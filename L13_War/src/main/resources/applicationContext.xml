@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/util
+		http://www.springframework.org/schema/util/spring-util-3.2.xsd
+		http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context-3.2.xsd">
+
+    <context:annotation-config/>
+    <context:spring-configured/>
+
+
+    <bean id="cache" class="ru.otus.simplecache.SimpleCacheEngine">
+         <constructor-arg name="idleTimeMs" value="0"/>
+         <constructor-arg name="isEternal" value="false"/>
+         <constructor-arg name="lifeTimeMs" value="100"/>
+         <constructor-arg name="maxElements" value="10"/>
+     </bean>
+     <bean id="dbServise" class="ru.otus.cachedDBservice.CachedDbService">
+         <constructor-arg ref="cache"/>
+     </bean>
+    <bean id="authService" class="ru.otus.servlets.AuthService"/>
+<!--
+    <bean id="sampleServlet" class="ru.otus.servlets.SampleServlet" />
+-->
+
+</beans>

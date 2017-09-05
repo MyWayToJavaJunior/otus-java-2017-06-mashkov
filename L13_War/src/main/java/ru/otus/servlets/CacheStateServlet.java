@@ -1,5 +1,7 @@
 package ru.otus.servlets;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
@@ -13,10 +15,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Configurable
-public class SampleServlet extends HttpServlet {
+public class CacheStateServlet extends HttpServlet{
 
     @Autowired
-    private SimpleCacheEngine cacheEngine;
+    SimpleCacheEngine cacheEngine;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -25,16 +27,24 @@ public class SampleServlet extends HttpServlet {
 
     }
 
-
     public void doGet(HttpServletRequest request, HttpServletResponse response){
+
+        Gson gson = new Gson();
+        JsonObject object = new JsonObject();
+        object.addProperty("hit", cacheEngine.getHitCount());
+        object.addProperty("miss", cacheEngine.getMissCount());
+        object.addProperty("dead", cacheEngine.getDeadReferences());
+        String result = gson.toJson(object);
+
         try {
-            response.getWriter().write("Hello");
+            response.getWriter().write(result);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        response.setContentType("text/html; charset=UTF-8");
+        response.setContentType("application/json; charset=UTF-8");
         response.setHeader("Access-Control-Allow-Origin", "*");
-        response.setStatus(HttpServletResponse.SC_OK);
+        response.setStatus( HttpServletResponse.SC_OK );
     }
+
 }

@@ -29,7 +29,7 @@ class AtmDepartmentTest {
     }
 
     @Test
-    void setDefaultMoney() throws OutOfMoneyException, OutOfExchangeException {
+    void setDefaultMoney() throws Exception {
         long b1 = department.getBalance();
         long summ = 1700;
         department.getMoney(summ, 2);
