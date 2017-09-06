@@ -23,6 +23,9 @@ public class AdminServlet extends HttpServlet {
     private AuthService authService;
     @Autowired
     private SimpleCacheEngine cacheEngine;
+    @Autowired
+    private TestClass testClass;
+
     private String userName = "anonymous";
 
     public AdminServlet(){
@@ -37,7 +40,7 @@ public class AdminServlet extends HttpServlet {
     }
 
     public void doGet(HttpServletRequest request, HttpServletResponse response){
-        startTestCache();
+        testClass.startTestCache();
 
         String id = request.getSession().getId();
         Map<String, Object> body = new HashMap<>();
@@ -68,28 +71,8 @@ public class AdminServlet extends HttpServlet {
         response.setStatus( HttpServletResponse.SC_OK );
     }
 
-    private void startTestCache(){
-        new Thread(() -> {
-            int size = 100;
 
-            while (true){
-                for (int i = 10; i < size; i++) {
-                    cacheEngine.put((long) i, new UserDataSet("user"+i, i));
-                }
 
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-                for (int i = 10; i < size; i++) {
-
-                    cacheEngine.get((long)i);
-                }
-            }
-        }).start();
-    }
 
 
 }

@@ -24,6 +24,7 @@
          <constructor-arg ref="cache"/>
      </bean>
     <bean id="authService" class="ru.otus.servlets.AuthService"/>
+    <bean id="testClass" class="ru.otus.servlets.TestClass" init-method="configDb"/>
 <!--
     <bean id="sampleServlet" class="ru.otus.servlets.SampleServlet" />
 -->

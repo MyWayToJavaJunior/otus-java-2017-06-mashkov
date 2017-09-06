@@ -25,6 +25,9 @@ public class LoginServlet extends HttpServlet {
     @Autowired
     private AuthService authService;
 
+    @Autowired
+    private TestClass testClass;
+
 
     @Override
     public void init(ServletConfig config) throws ServletException {
