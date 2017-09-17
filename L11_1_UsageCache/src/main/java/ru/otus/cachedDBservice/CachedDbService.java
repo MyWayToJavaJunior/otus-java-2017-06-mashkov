@@ -3,8 +3,8 @@ package ru.otus.cachedDBservice;
 import ru.otus.DBService.DBServiceImpl;
 import ru.otus.interfaces.DBService;
 import ru.otus.models.UserDataSet;
-import ru.otus.simplecache.CacheException;
-import ru.otus.simplecache.SimpleCache;
+import ru.otus.softcache.SimpleCache;
+
 
 import java.util.List;
 import java.util.Optional;

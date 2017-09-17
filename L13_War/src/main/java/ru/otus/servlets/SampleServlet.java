@@ -3,7 +3,7 @@ package ru.otus.servlets;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
-import ru.otus.simplecache.SimpleCacheEngine;
+import ru.otus.softcache.SimpleCache;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -16,7 +16,7 @@ import java.io.IOException;
 public class SampleServlet extends HttpServlet {
 
     @Autowired
-    private SimpleCacheEngine cacheEngine;
+    private SimpleCache cacheEngine;
 
     @Override
     public void init(ServletConfig config) throws ServletException {

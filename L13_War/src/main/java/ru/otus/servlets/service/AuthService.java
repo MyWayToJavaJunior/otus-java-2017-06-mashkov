@@ -1,11 +1,19 @@
-package ru.otus.servlets;
+package ru.otus.servlets.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import ru.otus.models.UserDataSet;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@Component
 public class AuthService {
+
+
+    private String testValue;
+
     private Map<String, UserDataSet> users;
 
     public AuthService(){
@@ -22,5 +30,10 @@ public class AuthService {
 
     public UserDataSet get(String id){
         return users.get(id);
+    }
+
+    @Value("${test.value}")
+    private void setTestValue(String value){
+        this.testValue = testValue;
     }
 }

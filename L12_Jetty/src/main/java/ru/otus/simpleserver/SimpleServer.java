@@ -10,11 +10,12 @@ import ru.otus.dbhelper.DbHelper;
 import ru.otus.executor.Executor;
 import ru.otus.interfaces.DBService;
 import ru.otus.models.UserDataSet;
-import ru.otus.simplecache.CacheFactory;
-import ru.otus.simplecache.SimpleCacheEngine;
+
 import ru.otus.simpleserver.servlets.AdminServlet;
 import ru.otus.simpleserver.servlets.CacheStateServlet;
 import ru.otus.simpleserver.servlets.LoginServlet;
+import ru.otus.softcache.CacheFactory;
+import ru.otus.softcache.SimpleCache;
 
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -24,7 +25,7 @@ public class SimpleServer {
     static final private String PUBLIC_HTML = "L12_Jetty/public_html";
     static final private int PORT = 8090;
 
-    private SimpleCacheEngine<Long, UserDataSet> cache;
+    private SimpleCache<Long, UserDataSet> cache;
     private DBService dbService;
     private Map<String, UserDataSet> authorized;
 
@@ -61,8 +62,8 @@ public class SimpleServer {
             e.printStackTrace();
         }
 
-        cache = new CacheFactory<Long, UserDataSet>()
-                .getLiveCache(20, 2000);
+        cache = CacheFactory
+                .getLifeCache(20, 2000);
         dbService = new CachedDbService(cache);
         UserDataSet user = new UserDataSet("anton", 29);
         user.setPass("admin");

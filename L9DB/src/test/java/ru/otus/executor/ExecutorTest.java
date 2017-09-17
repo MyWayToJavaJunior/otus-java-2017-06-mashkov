@@ -23,7 +23,7 @@ class ExecutorTest {
         executor = new Executor(connection);
 
         try {
-            executor.execUpdate("create table if not exists users (id  bigserial not null, name varchar(256), age int not null, primary key (id))");
+            executor.execUpdate("create table if not exists users2 (id  bigserial not null, age int, name varchar(256), pass varchar(256),status varchar(256), primary key (id))");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -35,7 +35,7 @@ class ExecutorTest {
         try {
             executor.save(user);
 
-            String query = "select * from users where id=" + user.getId();
+            String query = "select * from users2 where id=" + user.getId();
 
             executor.execQuery(query, rs -> {
                 rs.next();
@@ -109,7 +109,7 @@ class ExecutorTest {
     @AfterAll
     static void tearDown() {
         try {
-            executor.execUpdate("drop table users");
+            executor.execUpdate("drop table users2");
             connection.close();
         } catch (SQLException e) {
             e.printStackTrace();

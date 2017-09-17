@@ -31,7 +31,7 @@
         </dependency>
         <dependency>
             <groupId>ru.otus</groupId>
-            <artifactId>L11_1_Cache</artifactId>
+            <artifactId>cache</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>

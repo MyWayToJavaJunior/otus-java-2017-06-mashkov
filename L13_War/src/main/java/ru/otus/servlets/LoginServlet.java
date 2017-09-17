@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 import ru.otus.interfaces.DBService;
 import ru.otus.models.UserDataSet;
+import ru.otus.servlets.service.AuthService;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -24,10 +25,6 @@ public class LoginServlet extends HttpServlet {
 
     @Autowired
     private AuthService authService;
-
-    @Autowired
-    private TestClass testClass;
-
 
     @Override
     public void init(ServletConfig config) throws ServletException {

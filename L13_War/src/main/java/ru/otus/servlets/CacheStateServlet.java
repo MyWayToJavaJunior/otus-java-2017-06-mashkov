@@ -5,7 +5,7 @@ import com.google.gson.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
-import ru.otus.simplecache.SimpleCacheEngine;
+import ru.otus.softcache.SimpleCache;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -18,7 +18,7 @@ import java.io.IOException;
 public class CacheStateServlet extends HttpServlet{
 
     @Autowired
-    SimpleCacheEngine cacheEngine;
+    SimpleCache cacheEngine;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -33,7 +33,7 @@ public class CacheStateServlet extends HttpServlet{
         JsonObject object = new JsonObject();
         object.addProperty("hit", cacheEngine.getHitCount());
         object.addProperty("miss", cacheEngine.getMissCount());
-        object.addProperty("dead", cacheEngine.getDeadReferences());
+        object.addProperty("dead", cacheEngine.getDeadReference());
         String result = gson.toJson(object);
 
         try {

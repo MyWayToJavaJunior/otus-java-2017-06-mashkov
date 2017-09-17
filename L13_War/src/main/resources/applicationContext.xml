@@ -9,21 +9,27 @@
 		http://www.springframework.org/schema/util/spring-util-3.2.xsd
 		http://www.springframework.org/schema/context
 		http://www.springframework.org/schema/context/spring-context-3.2.xsd">
-
+    <context:component-scan base-package="ru.otus" />
     <context:annotation-config/>
     <context:spring-configured/>
 
+    <bean id="propertyConfigurer"
+          class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="location" value="classpath:springConf.properties"/>
+    </bean>
 
-    <bean id="cache" class="ru.otus.simplecache.SimpleCacheEngine">
-         <constructor-arg name="idleTimeMs" value="0"/>
-         <constructor-arg name="isEternal" value="false"/>
-         <constructor-arg name="lifeTimeMs" value="2000"/>
-         <constructor-arg name="maxElements" value="10"/>
+
+
+    <bean id="cache" class="ru.otus.softcache.SoftCache">
+         <constructor-arg name="idleTimeMs" value="${cache.idleTimeMs}"/>
+         <constructor-arg name="isEternal" value="${cache.isEternal}"/>
+         <constructor-arg name="lifeTimeMs" value="${cache.lifeTimeMs}"/>
+         <constructor-arg name="maxElements" value="${cache.maxElements}"/>
      </bean>
      <bean id="dbServise" class="ru.otus.cachedDBservice.CachedDbService">
          <constructor-arg ref="cache"/>
      </bean>
-    <bean id="authService" class="ru.otus.servlets.AuthService"/>
+    <!--<bean id="authService" class="ru.otus.servlets.service.AuthService"/>-->
     <bean id="testClass" class="ru.otus.servlets.TestClass" init-method="configDb"/>
 <!--
     <bean id="sampleServlet" class="ru.otus.servlets.SampleServlet" />

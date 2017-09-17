@@ -3,9 +3,8 @@ package ru.otus.servlets;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
-import ru.otus.models.UserDataSet;
-import ru.otus.simplecache.SimpleCache;
-import ru.otus.simplecache.SimpleCacheEngine;
+import ru.otus.servlets.service.AuthService;
+
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -19,10 +18,8 @@ import java.util.Map;
 @Configurable
 public class AdminServlet extends HttpServlet {
 
-    @Autowired
     private AuthService authService;
-    @Autowired
-    private SimpleCacheEngine cacheEngine;
+
     @Autowired
     private TestClass testClass;
 
@@ -69,6 +66,11 @@ public class AdminServlet extends HttpServlet {
         response.setContentType("text/html; charset=UTF-8");
         response.setHeader("Access-Control-Allow-Origin", "*");
         response.setStatus( HttpServletResponse.SC_OK );
+    }
+
+    @Autowired
+    private void setAuthService(AuthService service){
+        this.authService = service;
     }
 
 

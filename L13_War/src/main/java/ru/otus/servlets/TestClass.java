@@ -5,7 +5,7 @@ import ru.otus.dbhelper.DbHelper;
 import ru.otus.executor.Executor;
 import ru.otus.interfaces.DBService;
 import ru.otus.models.UserDataSet;
-import ru.otus.simplecache.SimpleCacheEngine;
+import ru.otus.softcache.SimpleCache;
 
 import java.sql.SQLException;
 
@@ -14,7 +14,7 @@ public class TestClass {
     @Autowired
     DBService dbService;
     @Autowired
-    SimpleCacheEngine cache;
+    SimpleCache cache;
 
     public TestClass(){}
 

@@ -2,7 +2,7 @@ package ru.otus.simpleserver.servlets;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import ru.otus.simplecache.SimpleCacheEngine;
+import ru.otus.softcache.SimpleCache;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -10,9 +10,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class CacheStateServlet extends HttpServlet{
-    SimpleCacheEngine cacheEngine;
+    SimpleCache cacheEngine;
 
-    public CacheStateServlet(SimpleCacheEngine cacheEngine){
+    public CacheStateServlet(SimpleCache cacheEngine){
         this.cacheEngine = cacheEngine;
     }
 
@@ -22,7 +22,7 @@ public class CacheStateServlet extends HttpServlet{
         JsonObject object = new JsonObject();
         object.addProperty("hit", cacheEngine.getHitCount());
         object.addProperty("miss", cacheEngine.getMissCount());
-        object.addProperty("dead", cacheEngine.getDeadReferences());
+        object.addProperty("dead", cacheEngine.getDeadReference());
         String result = gson.toJson(object);
 
         try {
