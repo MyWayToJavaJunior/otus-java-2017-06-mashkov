@@ -26,6 +26,7 @@
         <module>L12_Jetty</module>
         <module>L13_War</module>
         <module>cache</module>
+        <module>L14_Thread</module>
     </modules>
 
     <properties>
