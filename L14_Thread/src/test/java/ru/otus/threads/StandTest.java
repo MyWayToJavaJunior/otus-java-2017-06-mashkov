@@ -16,6 +16,7 @@ public class StandTest {
 
         //при size=1500000 результаты forkJoin и Arrays.parallelSort приближаются и становяться
         //лучше чем у Arrays.sort
+        //результат forkJoin плавает
         int size = 1500000;
         int[] sourceArray = new int[size];
         int[] sourceArray2 = new int[size];
