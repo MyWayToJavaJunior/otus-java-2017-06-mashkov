@@ -40,6 +40,7 @@ public class SimpleThreadPool {
             }
         });
         LOGGER.addHandler(handler);
+        LOGGER.setLevel(Level.OFF);
     }
 
     public void execute(Runnable r) {

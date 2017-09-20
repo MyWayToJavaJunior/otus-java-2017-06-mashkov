@@ -38,6 +38,7 @@ public class ArrayUtils {
             }
         });
         LOGGER.addHandler(handler);
+        LOGGER.setLevel(Level.OFF);
 
     }
 
