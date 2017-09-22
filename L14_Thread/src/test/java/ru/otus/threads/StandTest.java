@@ -17,11 +17,12 @@ public class StandTest {
         //при size=1500000 результаты forkJoin и Arrays.parallelSort приближаются и становяться
         //лучше чем у Arrays.sort
         //результат forkJoin плавает
-        int size = 1500000;
+        int size = 1_500_000;
         int[] sourceArray = new int[size];
         int[] sourceArray2 = new int[size];
         int[] actualArrayUtils = new int[size];
         int[] actualForkJoin;
+        int[] actualSimpleForkJoin;
         for (int i = 0; i < size; i++) {
             sourceArray[i] = random.nextInt();
             sourceArray2[i] = random.nextInt();
@@ -36,6 +37,9 @@ public class StandTest {
         long startForkJoinTime = System.nanoTime();
         actualForkJoin = ForkJoinArraySort.sort(sourceArray);
         long stopForkJoinTime = System.nanoTime();
+        long startSimpleForkJoinTime = System.nanoTime();
+        actualSimpleForkJoin = SimpleForkJoinSort.sort(sourceArray);
+        long stopSimpleForkJoinTime = System.nanoTime();
         long startReferenceTime = System.nanoTime();
         Arrays.sort(sourceArray);
         long stopReferenceTime = System.nanoTime();
@@ -43,10 +47,11 @@ public class StandTest {
         Arrays.parallelSort(sourceArray2);
         long stopReferenceParallTime = System.nanoTime();
 
-        System.out.println("ArrayUtils: "+(stopArrayUtilsTime-startArrayUtilsTime));
-        System.out.println("ForkJoin:   "+(stopForkJoinTime-startForkJoinTime));
-        System.out.println("Reference:  "+(stopReferenceTime-startReferenceTime));
-        System.out.println("ParallelRef:"+(stopReferenceParallTime-startReferenceParalllTime));
+        System.out.println("ArrayUtils:       "+(stopArrayUtilsTime-startArrayUtilsTime));
+        System.out.println("ForkJoin:         "+(stopForkJoinTime-startForkJoinTime));
+        System.out.println("SimpleForkJoin:   "+(stopSimpleForkJoinTime-startSimpleForkJoinTime));
+        System.out.println("Reference:        "+(stopReferenceTime-startReferenceTime));
+        System.out.println("ParallelRef:      "+(stopReferenceParallTime-startReferenceParalllTime));
 
         Assert.assertArrayEquals(sourceArray, actualArrayUtils);
         Assert.assertArrayEquals(sourceArray, actualForkJoin);
