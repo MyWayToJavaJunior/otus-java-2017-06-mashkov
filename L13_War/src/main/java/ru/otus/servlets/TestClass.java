@@ -1,6 +1,7 @@
 package ru.otus.servlets;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import ru.otus.dbhelper.DbHelper;
 import ru.otus.executor.Executor;
 import ru.otus.interfaces.DBService;
@@ -9,9 +10,11 @@ import ru.otus.softcache.SimpleCache;
 
 import java.sql.SQLException;
 
+
 public class TestClass {
 
     @Autowired
+
     DBService dbService;
     @Autowired
     SimpleCache cache;

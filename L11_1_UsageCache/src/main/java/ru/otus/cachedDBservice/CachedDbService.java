@@ -21,7 +21,9 @@ public class CachedDbService implements DBService {
 
     @Override
     public String getLocalStatus() {
-        return dbService.getLocalStatus();
+        return "Hit count: "+userDataSetCache.getHitCount()+"\n"
+                +"Miss count: "+userDataSetCache.getMissCount()+"\n"
+                +"Dead reference: "+userDataSetCache.getDeadReference()+"\n";
     }
 
     @Override
@@ -69,4 +71,5 @@ public class CachedDbService implements DBService {
     public void shutdown() {
         dbService.shutdown();
     }
+
 }

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="propertyConfigurer"
+          class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="location" value="classpath:springConf.properties"/>
+    </bean>
+
+    <bean id="cache" class="ru.otus.softcache.SoftCache">
+        <constructor-arg name="idleTimeMs" value="${cache.idleTimeMs}"/>
+        <constructor-arg name="isEternal" value="${cache.isEternal}"/>
+        <constructor-arg name="lifeTimeMs" value="${cache.lifeTimeMs}"/>
+        <constructor-arg name="maxElements" value="${cache.maxElements}"/>
+    </bean>
+    <bean id="cachedDBservice" class="ru.otus.cachedDBservice.CachedDbService">
+        <constructor-arg ref="cache"/>
+    </bean>
+    <bean id="messageSystem" class="ru.otus.messageSystem.MessageSystem"/>
+    <bean id="dbAddress" class="ru.otus.messageSystem.Address">
+        <constructor-arg value="db"/>
+    </bean>
+    <bean id="socketAddress" class="ru.otus.messageSystem.Address">
+        <constructor-arg value="socket"/>
+    </bean>
+    <bean id="dbServiceImpl" class="ru.otus.messageserver.messages.db.DbServiceImpl">
+        <constructor-arg index="0" ref="messageSystemContext"/>
+        <constructor-arg index="1" ref="dbAddress"/>
+    </bean>
+    <bean id="frontendImpl" class="ru.otus.messageserver.messages.frontend.FrontendServiceImpl">
+        <constructor-arg index="0" ref="socketAddress"/>
+        <constructor-arg index="1" ref="messageSystemContext"/>
+    </bean>
+    <bean id="testClass" class="ru.otus.messageserver.TestClass" init-method="startTestCache"/>
+    <bean id="gson" class="com.google.gson.Gson"/>
+</beans>

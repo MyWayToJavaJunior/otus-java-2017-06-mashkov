@@ -27,6 +27,8 @@
         <module>L13_War</module>
         <module>cache</module>
         <module>L14_Thread</module>
+        <module>L15_Message</module>
+        <module>message_system</module>
     </modules>
 
     <properties>

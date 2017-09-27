@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Socket sample</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <style>
+        #content{
+            width: 500px;
+            margin: 0 auto;
+        }
+        textarea{
+            width: 300px;
+            height: 300px;
+        }
+    </style>
+
+    <script>
+        $(function () {
+            var webSocket;
+            var output = $("textarea");
+
+            function connect() {
+                // open the connection if one does not exist
+                if (webSocket !== undefined
+                    && webSocket.readyState !== WebSocket.CLOSED) {
+                    return;
+                }
+                // Create a websocket
+                webSocket = new WebSocket("ws://localhost:8090/websocket");
+
+                webSocket.onopen = function(event) {
+                    updateOutput("Connected!");
+                    connectBtn.disabled = true;
+                    sendBtn.disabled = false;
+
+                };
+
+                webSocket.onmessage = function(event) {
+                    updateOutput(event.data);
+                };
+
+                webSocket.onclose = function(event) {
+                    updateOutput("Connection Closed");
+                    connectBtn.disabled = false;
+                    sendBtn.disabled = true;
+                };
+            }
+
+            function updateOutput(msg) {
+                output.append("\n"+msg);
+            }
+
+            $("#connectBtn").click(connect);
+            $("#sendBtn").click(function () {
+
+                var msg = {
+                    type: "msg",
+                    msg: $("input").val()
+                };
+
+                webSocket.send(JSON.stringify(msg));
+            })
+
+            $("#getInfoBtn").click(function () {
+                var msg = {
+                    type: "info",
+                    msg: ""
+                };
+                webSocket.send(JSON.stringify(msg));
+            })
+
+        })
+    </script>
+
+</head>
+<body>
+<div id="content">
+    <h2>Socket sample</h2>
+    <textarea></textarea><br>
+    <input type="text">
+    <button id="connectBtn" type="button">connect</button>
+    <button id="sendBtn" type="button">Send</button>
+    <button id="getInfoBtn" type="button">Get info</button>
+</div>
+
+
+</body>
+</html>
