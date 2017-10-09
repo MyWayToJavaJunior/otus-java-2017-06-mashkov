@@ -42,7 +42,7 @@ public class SoftCache<K, V> implements SimpleCache<K,V>{
         //Some mBean = new Some();
         MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
         ObjectName name = new ObjectName("ru.otus:type=CacheController");
-        mbs.registerMBean(mBean, name);
+        //mbs.registerMBean(mBean, name);
     }
 
     @Override

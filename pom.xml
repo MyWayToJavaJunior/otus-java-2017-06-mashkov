@@ -29,6 +29,8 @@
         <module>L14_Thread</module>
         <module>L15_Message</module>
         <module>message_system</module>
+        <module>L16_message_server</module>
+        <module>L16_message_client</module>
     </modules>
 
     <properties>
