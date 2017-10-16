@@ -10,6 +10,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>L16_message_client</artifactId>
+    <dependencies>
+        <dependency>
+            <groupId>ru.otus</groupId>
+            <artifactId>L16_message_server</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
 
 
 </project>
