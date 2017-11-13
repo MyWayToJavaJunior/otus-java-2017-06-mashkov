@@ -130,7 +130,9 @@ public class SocketMsgClient implements MsgClient, Addressee {
         JSONParser jsonParser = new JSONParser();
         JSONObject jsonObject = (JSONObject) jsonParser.parse(json);
         String className = (String) jsonObject.get(Msg.CLASS_NAME_VARIABLE);
-        Msg msg = null;
+        Gson gson = new Gson();
+        Object msg = gson.fromJson(json, Class.forName(className));
+        /*Msg msg = null;
 
         try {
             clazz = Class.forName(className);
@@ -140,13 +142,16 @@ public class SocketMsgClient implements MsgClient, Addressee {
                 System.out.println(((Field)f).getName());
                 //JSONParser jsonParser = new JSONParser();
                 //JSONObject jsonObject = null;
-                /*try {
+                *//*try {
                     jsonParser.parse(json);
                 } catch (ParseException e) {
                     e.printStackTrace();
-                }*/
+                }*//*
                 Object value = jsonObject.get(((Field)f).getName());
+
+                System.out.println(value);
                 //((Msg)a).setName(value);
+
                 ReflectionHelper.setFieldValue(a, (Field) f, value);
                 //ReflectionHelper.setFieldValue(a,((Field)f).getName(), value);
 
@@ -156,8 +161,8 @@ public class SocketMsgClient implements MsgClient, Addressee {
 
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
-        }
-        return msg;
+        }*/
+        return (Msg)msg;
     }
 
     @Override

@@ -8,17 +8,18 @@ public abstract class Msg {
     private Address addressTo;
     private Address addressFrom;
 
-    @SuppressWarnings({"FieldCanBeLocal", "unused"})
+
+    /*@SuppressWarnings({"FieldCanBeLocal", "unused"})
     private final String className;
 
 
     protected Msg(Class<?> klass) {
         this.className = klass.getName();
-    }
+    }*/
 
-    public String getClassName() {
+    /*public String getClassName() {
         return className;
-    }
+    }*/
 
     public Address getAddressTo() {
         return addressTo;

@@ -1,11 +1,15 @@
 package ru.otus.socketserver.server;
 
 import com.google.gson.Gson;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import ru.otus.socketserver.Config;
 import ru.otus.socketserver.messages.Msg;
+import ru.otus.socketserver.messages.MsgToServer;
 import ru.otus.socketserver.messages.RegisterMsg;
+import ru.otus.socketserver.messages.SimpleMsg;
 import ru.otus.socketserver.socket.Address;
 import ru.otus.socketserver.socket.SocketMsgClient;
 
@@ -35,23 +39,25 @@ public class MessageServer {
     private final Gson gson;
 
     private final ExecutorService executor;
+    private AnnotationConfigApplicationContext context;
     //private final Map<String, ChannelMessages> channelMessages;
-    @Autowired
     ChannelManager channelManager;
 
     public MessageServer() {
         executor = Executors.newFixedThreadPool(THREADS_NUMBER);
         gson = new Gson();
-        //channelMessages = new ConcurrentHashMap<>();
+        context =  new AnnotationConfigApplicationContext();
+        context.register(Config.class);
+        context.refresh();
+        channelManager = context.getBean(ChannelManager.class);
     }
 
     @SuppressWarnings("InfiniteLoopStatement")
     public void start() throws Exception {
         //executor.submit(this::echo);
 
-        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
-        context.register(Config.class);
-        context.refresh();
+
+
         try (ServerSocketChannel serverSocketChannel = ServerSocketChannel.open()) {
             serverSocketChannel.bind(new InetSocketAddress("localhost", PORT));
 
@@ -90,12 +96,18 @@ public class MessageServer {
                                 //тут обработаем сообщение, получив его из json
                                 //и добавим ответ в канал
                                 if (!result.equals("")){
-                                    Msg msg = SocketMsgClient.getMsgFromJSON(result, context);
+                                    //Msg msg = gson.fromJson(result, Msg.class);
+                                    //Msg msg = SocketMsgClient.getMsgFromJSON(result, context);
+                                    JSONParser jsonParser = new JSONParser();
+                                    JSONObject jsonObject = (JSONObject) jsonParser.parse(result);
+                                    String className = (String) jsonObject.get(Msg.CLASS_NAME_VARIABLE);
 
-                                    if (msg.getClassName().equals(RegisterMsg.class.getName())){
+                                    if (className.equals(RegisterMsg.class.getName())){
+                                        RegisterMsg msg = gson.fromJson(result, RegisterMsg.class);
                                         Address address = msg.getAddressFrom();
                                         channelManager.addChannelMessage(address.getName(), new ChannelMessages(channel, address));
                                     } else {
+                                        SimpleMsg msg = gson.fromJson(result, SimpleMsg.class);
                                         Address to = msg.getAddressTo();
                                         msg.getAddressFrom().setRemoteAddress(remoteAddress);
                                         channelManager.getChannel(to).ifPresent(c->{

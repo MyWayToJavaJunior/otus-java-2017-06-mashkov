@@ -8,12 +8,15 @@ public class SimpleMsgToClient extends MsgToServer {
     String message;
 
 
-    public SimpleMsgToClient(Class<?> klass, String message) {
-        super(klass);
+    public SimpleMsgToClient(String message) {
+        super(SimpleMsgToClient.class);
         this.message = message;
         Address to = new Address();
         to.setName("simple");
         setAddressTo(to);
+        Address from = new Address();
+        from.setName("simple");
+        setAddressFrom(from);
     }
 
     @Override

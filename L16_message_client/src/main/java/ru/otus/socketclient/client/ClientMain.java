@@ -72,7 +72,7 @@ public class ClientMain {
 
             try {
                 Thread.sleep(1000);
-                client.send(new SimpleMsgToClient(SimpleMsgToClient.class, "message"));
+                client.send(new SimpleMsgToClient("message"));
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
