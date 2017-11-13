@@ -1,10 +1,15 @@
 package ru.otus.socketserver.server;
 
 import com.google.gson.Gson;
-import ru.otus.socketserver.common.messages.Msg;
-import ru.otus.socketserver.common.messages.MsgToServer;
-import ru.otus.socketserver.common.socket.SocketMsgClient;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import ru.otus.socketserver.Config;
+import ru.otus.socketserver.messages.Msg;
+import ru.otus.socketserver.messages.RegisterMsg;
+import ru.otus.socketserver.socket.Address;
+import ru.otus.socketserver.socket.SocketMsgClient;
 
+import java.applet.AppletContext;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
@@ -13,7 +18,6 @@ import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
@@ -28,18 +32,26 @@ public class MessageServer {
     private static final int CAPACITY = 256;
     private static final String MESSAGES_SEPARATOR = "\n\n";
 
+    private final Gson gson;
+
     private final ExecutorService executor;
-    private final Map<String, ChannelMessages> channelMessages;
+    //private final Map<String, ChannelMessages> channelMessages;
+    @Autowired
+    ChannelManager channelManager;
 
     public MessageServer() {
         executor = Executors.newFixedThreadPool(THREADS_NUMBER);
-        channelMessages = new ConcurrentHashMap<>();
+        gson = new Gson();
+        //channelMessages = new ConcurrentHashMap<>();
     }
 
     @SuppressWarnings("InfiniteLoopStatement")
     public void start() throws Exception {
-        executor.submit(this::echo);
+        //executor.submit(this::echo);
 
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
+        context.register(Config.class);
+        context.refresh();
         try (ServerSocketChannel serverSocketChannel = ServerSocketChannel.open()) {
             serverSocketChannel.bind(new InetSocketAddress("localhost", PORT));
 
@@ -64,11 +76,11 @@ public class MessageServer {
                             channel.configureBlocking(false);
                             channel.register(selector, SelectionKey.OP_READ);
 
-                            channelMessages.put(remoteAddress, new ChannelMessages(channel));
+                            //channelManager.addChannelMessage(remoteAddress, new ChannelMessages(channel));
 
                         } else if (key.isReadable()) {
                             SocketChannel channel = (SocketChannel) key.channel();
-
+                            String remoteAddress = channel.getRemoteAddress().toString();
                             ByteBuffer buffer = ByteBuffer.allocate(CAPACITY);
                             int read = channel.read(buffer);
                             if (read != -1) {
@@ -78,24 +90,40 @@ public class MessageServer {
                                 //тут обработаем сообщение, получив его из json
                                 //и добавим ответ в канал
                                 if (!result.equals("")){
-                                    MsgToServer msg = (MsgToServer) SocketMsgClient.getMsgFromJSON(result);
-                                    msg.setChannelMessages(channelMessages.get(channel.getRemoteAddress().toString()));
-                                    Optional<Msg> optional = msg.exec();
+                                    Msg msg = SocketMsgClient.getMsgFromJSON(result, context);
+
+                                    if (msg.getClassName().equals(RegisterMsg.class.getName())){
+                                        Address address = msg.getAddressFrom();
+                                        channelManager.addChannelMessage(address.getName(), new ChannelMessages(channel, address));
+                                    } else {
+                                        Address to = msg.getAddressTo();
+                                        msg.getAddressFrom().setRemoteAddress(remoteAddress);
+                                        channelManager.getChannel(to).ifPresent(c->{
+                                            sendMessageToChannel(msg, c.channel);
+                                        });
+
+
+                                        //sendMessageToChannel();
+                                        //msg.setChannelMessages(channelMessages.get(channel.getRemoteAddress().toString()));
+                                    /*Optional<Msg> optional = msg.exec();
                                     optional.ifPresent(m->{
                                         try {
-                                            channelMessages.get(channel.getRemoteAddress().toString()).messages.add(new Gson().toJson(m));
+                                            channelManager.getChannel(channel.getRemoteAddress().toString()).messages.add(new Gson().toJson(m));
                                         } catch (IOException e) {
                                             e.printStackTrace();
                                         }
-                                    });
+                                    });*/
+                                    }
+
+
                                 }
 
                                 //System.out.println("Message from json:"+result);
                                 //channelMessages.get(channel.getRemoteAddress().toString()).messages.add(result);
                             } else {
                                 key.cancel();
-                                String remoteAddress = channel.getRemoteAddress().toString();
-                                channelMessages.remove(remoteAddress);
+                                //String remoteAddress = channel.getRemoteAddress().toString();
+                                //channelMessages.remove(remoteAddress);
                                 System.out.println("Connection closed, key canceled");
                             }
                         }
@@ -109,9 +137,9 @@ public class MessageServer {
         }
     }
 
-    @SuppressWarnings("InfiniteLoopStatement")
+    /*@SuppressWarnings("InfiniteLoopStatement")
     private Object echo() throws InterruptedException {
-        while (true) {
+       while (true) {
             for (Map.Entry<String, ChannelMessages> entry : channelMessages.entrySet()) {
                 ChannelMessages channelMessages = entry.getValue();
                 if (channelMessages.channel.isConnected()) {
@@ -124,7 +152,7 @@ public class MessageServer {
             }
             Thread.sleep(ECHO_DELAY);
         }
-    }
+    }*/
 
     public void sendMessageToChannel(String msg, SocketChannel channel){
         try {
@@ -140,7 +168,8 @@ public class MessageServer {
         }
     }
 
-
-
-
+    public void sendMessageToChannel(Msg msg, SocketChannel channel){
+        String message = gson.toJson(msg);
+        sendMessageToChannel(message, channel);
+    }
 }

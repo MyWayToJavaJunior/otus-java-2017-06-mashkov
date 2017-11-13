@@ -2,9 +2,11 @@ package ru.otus.socketclient.client;
 
 
 
-import ru.otus.socketserver.common.messages.Msg;
-import ru.otus.socketserver.common.socket.SocketMsgClient;
-import ru.otus.socketserver.server.messages.TestMsgToServer;
+import ru.otus.socketclient.messages.SimpleMsgToClient;
+import ru.otus.socketserver.messages.Msg;
+import ru.otus.socketserver.messages.RegisterMsg;
+import ru.otus.socketserver.socket.Address;
+import ru.otus.socketserver.socket.SocketMsgClient;
 
 import java.lang.management.ManagementFactory;
 import java.util.concurrent.ExecutorService;
@@ -23,17 +25,24 @@ public class ClientMain {
     private static final int PAUSE_MS = 5000;
     private static final int MAX_MESSAGES_COUNT = 5;
 
+
     public static void main(String[] args) throws Exception {
-        new ClientMain().start();
+        new ClientMain().start("simple");
     }
 
     @SuppressWarnings("InfiniteLoopStatement")
-    public SocketMsgClient start() throws Exception {
+    public SocketMsgClient start(String name) throws Exception {
         String pid = ManagementFactory.getRuntimeMXBean().getName();
 
         SocketMsgClient client = new ManagedMsgSocketClient(HOST, PORT);
+        Address address = new Address();
+        address.setName(name);
+        client.setAddress(address);
+        RegisterMsg registerMsg = new RegisterMsg();
+        registerMsg.setAddressFrom(address);
         client.init();
 
+        client.send(registerMsg);
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         executorService.submit(() -> {
             try {
@@ -48,9 +57,9 @@ public class ClientMain {
         });
 
         new Thread(()->{
-            int count = 0;
+            /*int count = 0;
             while (count < MAX_MESSAGES_COUNT) {
-                Msg msg = new TestMsgToServer(TestMsgToServer.class);
+                //Msg msg = new TestMsgToServer(TestMsgToServer.class);
                 client.send(msg);
                 System.out.println("Message send: " + msg.toString());
                 try {
@@ -59,6 +68,13 @@ public class ClientMain {
                     e.printStackTrace();
                 }
                 count++;
+            }*/
+
+            try {
+                Thread.sleep(1000);
+                client.send(new SimpleMsgToClient(SimpleMsgToClient.class, "message"));
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
 
         }).start();

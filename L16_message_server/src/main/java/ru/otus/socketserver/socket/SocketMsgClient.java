@@ -1,26 +1,30 @@
-package ru.otus.socketserver.common.socket;
+package ru.otus.socketserver.socket;
 
 
 import com.google.gson.Gson;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import ru.otus.socketserver.common.messages.Msg;
+import org.springframework.context.ApplicationContext;
+import ru.otus.socketserver.messages.Msg;
+import ru.otus.testFramework.ReflectionHelper;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.lang.reflect.Field;
 import java.net.Socket;
 import java.util.List;
 import java.util.concurrent.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Stream;
 
 /**
  * Created by tully.
  */
-public class SocketMsgClient implements MsgClient {
+public class SocketMsgClient implements MsgClient, Addressee {
     private static final Logger logger = Logger.getLogger(SocketMsgClient.class.getName());
     private static final int WORKERS_COUNT = 2;
 
@@ -31,7 +35,9 @@ public class SocketMsgClient implements MsgClient {
     private final Socket socket;
     private final List<Runnable> shutdownRegistrations;
 
-    private String name;
+    private ApplicationContext applicationContext;
+
+    private Address address;
 
     public SocketMsgClient(Socket socket) {
         this.socket = socket;
@@ -62,6 +68,11 @@ public class SocketMsgClient implements MsgClient {
         executor.shutdown();
     }
 
+    @Override
+    public void register() {
+
+    }
+
     public void init() {
         executor.execute(this::sendMessage);
         executor.execute(this::receiveMessage);
@@ -80,7 +91,8 @@ public class SocketMsgClient implements MsgClient {
                 stringBuilder.append(inputLine);
                 if (inputLine.isEmpty()) { //empty line is the end of the message
                     String json = stringBuilder.toString();
-                    Msg msg = getMsgFromJSON(json);
+                    Msg msg = getMsgFromJSON(json, applicationContext);
+
                     input.add(msg);
                     stringBuilder = new StringBuilder();
                 }
@@ -105,21 +117,56 @@ public class SocketMsgClient implements MsgClient {
         }
     }
 
-    public static Msg getMsgFromJSON(String json) throws ParseException, ClassNotFoundException {
-        JSONParser jsonParser = new JSONParser();
+    public static Msg getMsgFromJSON(String json, ApplicationContext context) throws ParseException, ClassNotFoundException {
+        /*JSONParser jsonParser = new JSONParser();
         JSONObject jsonObject = (JSONObject) jsonParser.parse(json);
         String className = (String) jsonObject.get(Msg.CLASS_NAME_VARIABLE);
         Class<?> msgClass = Class.forName(className);
 
 
-        return (Msg) new Gson().fromJson(json, msgClass);
+        return (Msg) new Gson().fromJson(json, msgClass);*/
+        Class clazz;
+
+        JSONParser jsonParser = new JSONParser();
+        JSONObject jsonObject = (JSONObject) jsonParser.parse(json);
+        String className = (String) jsonObject.get(Msg.CLASS_NAME_VARIABLE);
+        Msg msg = null;
+
+        try {
+            clazz = Class.forName(className);
+            Msg a = (Msg)context.getBean(clazz);
+            //System.out.println(Arrays.toString(ReflectionHelper.getFields(clazz)));
+            Stream.of(ReflectionHelper.getFields(clazz)).forEach(f->{
+                System.out.println(((Field)f).getName());
+                //JSONParser jsonParser = new JSONParser();
+                //JSONObject jsonObject = null;
+                /*try {
+                    jsonParser.parse(json);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }*/
+                Object value = jsonObject.get(((Field)f).getName());
+                //((Msg)a).setName(value);
+                ReflectionHelper.setFieldValue(a, (Field) f, value);
+                //ReflectionHelper.setFieldValue(a,((Field)f).getName(), value);
+
+            });
+            msg = (Msg) a;
+            //((A)a).exec();
+
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return msg;
     }
 
-    public String getName() {
-        return name;
+    @Override
+    public Address getAddress() {
+        return address;
+    }
+    @Override
+    public void setAddress(Address address){
+        this.address = address;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
 }

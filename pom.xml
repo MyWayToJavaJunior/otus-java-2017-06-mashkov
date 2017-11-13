@@ -31,6 +31,7 @@
         <module>message_system</module>
         <module>L16_message_server</module>
         <module>L16_message_client</module>
+        <module>L16_message_core</module>
     </modules>
 
     <properties>

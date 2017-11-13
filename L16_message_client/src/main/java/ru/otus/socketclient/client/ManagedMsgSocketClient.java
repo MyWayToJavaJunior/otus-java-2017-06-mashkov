@@ -1,7 +1,7 @@
 package ru.otus.socketclient.client;
 
 
-import ru.otus.socketserver.common.socket.SocketMsgClient;
+import ru.otus.socketserver.socket.SocketMsgClient;
 
 import java.io.IOException;
 import java.net.Socket;

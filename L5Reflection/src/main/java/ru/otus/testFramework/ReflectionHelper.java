@@ -77,6 +77,20 @@ public class ReflectionHelper {
         }
     }
 
+    public static void setFieldValue(Object object, Field field, Object value){
+        field.setAccessible(true);
+        try {
+            if (field.getModifiers() != 25){
+                field.set(object, value);
+            }
+
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } finally {
+            field.setAccessible(false);
+        }
+    }
+
     static Object callMethod(Object object, String name, Object... args) {
         Method method = null;
         boolean isAccessible = true;

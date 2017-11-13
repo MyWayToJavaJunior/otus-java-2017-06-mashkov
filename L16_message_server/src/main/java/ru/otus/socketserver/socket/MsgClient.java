@@ -1,6 +1,6 @@
-package ru.otus.socketserver.common.socket;
+package ru.otus.socketserver.socket;
 
-import ru.otus.socketserver.common.messages.Msg;
+import ru.otus.socketserver.messages.Msg;
 
 import java.io.IOException;
 
@@ -15,4 +15,6 @@ public interface MsgClient {
     Msg take() throws InterruptedException;
 
     void close() throws IOException;
+
+    void register();
 }
